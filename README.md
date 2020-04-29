@@ -8,7 +8,8 @@
 > ![preview](/static/preview.jpg)
 
 #### 📝 Todo
-
+- [ ] ** multiple audio source support
+- [ ] ** audio load on fly support
 - [x] class implementation
 - [x] include canvas2d as render engine 
 - [ ] split the lifecycle into serveral stages

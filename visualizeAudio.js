@@ -197,7 +197,7 @@ class AudioVisualizer {
      */
     startTimer = () => {
         this.interval = setInterval(() => {
-            if (this.isPlaying) {
+            if (this.isPlaying && this.ctx.state === "running") {
                 let now = new Date(this.duration);
                 let min = now.getHours();
                 let sec = now.getMinutes();
