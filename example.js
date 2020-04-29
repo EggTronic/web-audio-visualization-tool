@@ -5,7 +5,7 @@ import {
   renderProgressbarShadow,
   renderText,
   renderTime
-} from './defaultRenders.js';
+} from './defaultRenderHooks.js';
 
 window.addEventListener('DOMContentLoaded', () => {
   'use strict';
@@ -24,13 +24,15 @@ window.addEventListener('DOMContentLoaded', () => {
     font: ['12px', 'Helvetica'],
     fftSize: 512,
 
-    // onInitHook: [],
-    // onStartHook: [],
-    // onPauseHook: [],
-    // onContinueHook: [],
+    onInitHook: [],
+    onLoadHook: [],
+    onStartHook: [],
+    onPauseHook: [],
+    onResumeHook: [],
     onFrameHook: [renderLounge, renderProgressbar, renderTime],
     onStaticHook: [renderProgressbarShadow, renderText],
-    // onEndHook: [],
+    onEventHook: [],
+    onEndHook: []
   })
   audioVisualizer.init();
 }, false);

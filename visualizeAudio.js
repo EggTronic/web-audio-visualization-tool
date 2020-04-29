@@ -1,7 +1,14 @@
 export default class AudioVisualizer {
   constructor(cfg) {
+    this.onInitHook = cfg.onInitHook || [],
+    this.onLoadHook = cfg.onLoadHook || [],
+    this.onStartHook = cfg.onStartHook || [],
+    this.onPauseHook = cfg.onPauseHook || [],
+    this.onResumeHook = cfg.onResumeHook || [],
     this.onFrameHook = cfg.onFrameHook || [];
     this.onStaticHook = cfg.onStaticHook || [];
+    this.onEventHook = cfg.onEventHook || [];
+    this.onEndHook = cfg.onEndHook || [];
 
     this.isPlaying = false;
     this.autoplay = cfg.autoplay || false;
@@ -34,15 +41,20 @@ export default class AudioVisualizer {
   }
 
   init = () => {
-    this.setContext();
-    this.setAnalyser();
-    this.setFrequencyData();
-    this.setBufferSourceNode();
-    this.setMediaSource();
-    this.setCanvasStyles();
-    this.setStaticCanvasStyles();
-    this.bindEvents();
-    this.renderStatic();
+    this._setContext();
+    this._setAnalyser();
+    this._setFrequencyData();
+    this._setBufferSourceNode();
+    this._setMediaSource();
+    this._setCanvasStyles();
+    this._setStaticCanvasStyles();
+    this._bindEvents();
+    this._renderStatic();
+    this._executeHook(this.onInitHook);
+
+    if (this.autoplay) {
+      this.loadSound();
+    }
     this.canvasCtx.fillText('Play', this.canvas.width / 2 + 10, this.canvas.height / 2 + 50);
   }
 
@@ -51,7 +63,7 @@ export default class AudioVisualizer {
    * Set current audio context.
    *
    */
-  setContext = () => {
+  _setContext = () => {
     try {
       window.AudioContext = window.AudioContext || window.webkitAudioContext;
       this.ctx = new window.AudioContext();
@@ -65,7 +77,7 @@ export default class AudioVisualizer {
    * Set buffer analyser.
    *
    */
-  setAnalyser = () => {
+  _setAnalyser = () => {
     this.analyser = this.ctx.createAnalyser();
     this.analyser.smoothingTimeConstant = 0.6;
     this.analyser.fftSize = this.fftSize;
@@ -76,7 +88,7 @@ export default class AudioVisualizer {
    * Set frequency data.
    *
    */
-  setFrequencyData = () => {
+  _setFrequencyData = () => {
     this.frequencyData = new Uint8Array(this.analyser.frequencyBinCount);
   };
 
@@ -85,7 +97,7 @@ export default class AudioVisualizer {
    * Set source buffer and connect processor and analyser.
    *
    */
-  setBufferSourceNode = () => {
+  _setBufferSourceNode = () => {
     this.sourceNode = this.ctx.createBufferSource();
     this.sourceNode.loop = this.loop;
     this.sourceNode.connect(this.analyser);
@@ -101,6 +113,7 @@ export default class AudioVisualizer {
         }.bind(this)
         , 1500)
 
+        this._executeHook(this.onEndHook);
     }.bind(this);
   };
 
@@ -109,7 +122,7 @@ export default class AudioVisualizer {
    * Set current media source url.
    *
    */
-  setMediaSource = () => {
+  _setMediaSource = () => {
     this.audioSrc = this.audio.getAttribute('src');
   };
 
@@ -118,7 +131,7 @@ export default class AudioVisualizer {
    * Set canvas gradient color.
    *
    */
-  setCanvasStyles = () => {
+  _setCanvasStyles = () => {
     this.gradient = this.canvasCtx.createLinearGradient(0, 0, 0, 300);
     this.gradient.addColorStop(1, this.barColor);
     this.canvasCtx.fillStyle = this.gradient;
@@ -133,7 +146,7 @@ export default class AudioVisualizer {
    * Set static canvas gradient color.
    *
    */
-  setStaticCanvasStyles = () => {
+  _setStaticCanvasStyles = () => {
     this.gradient = this.canvasStaticCtx.createLinearGradient(0, 0, 0, 300);
     this.gradient.addColorStop(1, this.barColor);
     this.canvasStaticCtx.fillStyle = this.gradient;
@@ -148,7 +161,7 @@ export default class AudioVisualizer {
    * Bind click events.
    *
    */
-  bindEvents = () => {
+  _bindEvents = () => {
     document.addEventListener('click', (e) => {
       if (e.target === this.canvas) {
         e.stopPropagation();
@@ -158,11 +171,9 @@ export default class AudioVisualizer {
           return this.pauseSound();
         }
       }
-    });
+    }); 
 
-    if (this.autoplay) {
-      this.loadSound();
-    }
+    this._executeHook(this.onEventHook);
   };
 
   /**
@@ -177,10 +188,12 @@ export default class AudioVisualizer {
     this.canvasCtx.fillText('Loading...', this.canvas.width / 2 + 10, this.canvas.height / 2 + 50);
 
     req.onload = function () {
-      this.ctx.decodeAudioData(req.response, this.playSound.bind(this), this.onError.bind(this));
+      this.ctx.decodeAudioData(req.response, this.playSound.bind(this), this._onError.bind(this));
     }.bind(this);
 
     req.send();
+
+    this._executeHook(this.onLoadHook);
   };
 
   /**
@@ -193,15 +206,17 @@ export default class AudioVisualizer {
     this.isPlaying = true;
     if (this.ctx.state === 'suspended') {
       this.ctx.resume();
-      this.renderFrame();
+      this._renderFrame();
+      this._executeHook(this.onResumeHook);
     } else {
       this.sourceNode.disconnect();
-      this.setBufferSourceNode();
+      this._setBufferSourceNode();
       this.sourceNode.buffer = buffer;
       this.sourceNode.start(0);
-      this.resetTimer();
-      this.startTimer();
-      this.renderFrame();
+      this._resetTimer();
+      this._startTimer();
+      this._renderFrame();
+      this._executeHook(this.onStartHook);
     }
   };
 
@@ -218,7 +233,7 @@ export default class AudioVisualizer {
    * @description
    * Start playing timer.
    */
-  startTimer = () => {
+  _startTimer = () => {
     this.interval = setInterval(() => {
       if (this.isPlaying && this.ctx.state === "running") {
         let now = new Date(this.duration);
@@ -235,7 +250,7 @@ export default class AudioVisualizer {
    * @description
    * Reset time counter.
    */
-  resetTimer = () => {
+  _resetTimer = () => {
     let time = new Date(0, 0);
     this.duration = time.getTime();
     this.minutes = '00';
@@ -248,7 +263,7 @@ export default class AudioVisualizer {
    *
    * @param  {Object} e
    */
-  onError = (e) => {
+  _onError = (e) => {
     console.info('Error decoding audio file. -- ', e);
   };
 
@@ -256,27 +271,33 @@ export default class AudioVisualizer {
    * @description
    * Render frame on canvas.
    */
-  renderFrame = () => {
+  _renderFrame = () => {
     if (this.isPlaying) {
-      requestAnimationFrame(this.renderFrame.bind(this));
+      requestAnimationFrame(this._renderFrame.bind(this));
     }
 
     this.analyser.getByteFrequencyData(this.frequencyData);
     this.canvasCtx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-    for (let i = 0; i < this.onFrameHook.length; i++) {
-      this.onFrameHook[i](this);
-    }
+    this._executeHook(this.onFrameHook)
   };
 
   /**
    * @description
    * Render frame on canvas.
    */
-  renderStatic = () => {
-    for (let i = 0; i < this.onStaticHook.length; i++) {
-      this.onStaticHook[i](this);
-    }
+  _renderStatic = () => {
+    this._executeHook(this.onStaticHook)
   };
+
+  /**
+   * @description
+   * Executer for hooks
+   */
+  _executeHook = (hook) => {
+    for (let i = 0; i < hook.length; i++) {
+      hook[i](this);
+    }
+  }
 }
 
