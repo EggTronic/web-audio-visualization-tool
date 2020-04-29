@@ -20,7 +20,7 @@
   - [ ] on pause stage
   - [ ] on resume stage
   - [ ] on end stage
-  - [ ] render frame stage
+  - [x] render frame stage
 - [ ] add some ready to use renderers
   - [x] rounded frequency visualization
   - [x] time visualization
