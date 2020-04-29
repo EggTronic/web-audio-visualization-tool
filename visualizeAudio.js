@@ -36,6 +36,7 @@ class AudioVisualizer {
         this.setMediaSource();
         this.setCanvasStyles();
         this.bindEvents();
+        this.canvasCtx.fillText('Play', this.canvas.width / 2 + 10, this.canvas.height / 2);
     }
 
     /**
@@ -149,6 +150,7 @@ class AudioVisualizer {
         let req = new XMLHttpRequest();
         req.open('GET', this.audioSrc, true);
         req.responseType = 'arraybuffer';
+        this.canvasCtx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.canvasCtx.fillText('Loading...', this.canvas.width / 2 + 10, this.canvas.height / 2);
 
         req.onload = function () {
@@ -345,7 +347,7 @@ AudioVisualizer.TYPE = {
 document.addEventListener('DOMContentLoaded', () => {
     'use strict';
     let audioVisualizer = new AudioVisualizer({
-        autoplay: true,
+        autoplay: false,
         loop: false,
         audio: 'myAudio',
         canvas: 'myCanvas',
