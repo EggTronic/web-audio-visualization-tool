@@ -33,5 +33,4 @@ window.addEventListener('DOMContentLoaded', () => {
     // onEndHook: [],
   })
   audioVisualizer.init();
-  console.log(1);
 }, false);
