@@ -1,11 +1,12 @@
 export default class AudioVisualizer {
   constructor(cfg) {
     this.onInitHook = cfg.onInitHook || [],
-    this.onLoadHook = cfg.onLoadHook || [],
+    this.onLoadAudioHook = cfg.onLoadAudioHook || [],
     this.onStartHook = cfg.onStartHook || [],
     this.onPauseHook = cfg.onPauseHook || [],
     this.onResumeHook = cfg.onResumeHook || [],
     this.onFrameHook = cfg.onFrameHook || [];
+    this.onAsyncStaticHook = cfg.onAsyncStaticHook || [];
     this.onStaticHook = cfg.onStaticHook || [];
     this.onEventHook = cfg.onEventHook || [];
     this.onEndHook = cfg.onEndHook || [];
@@ -184,16 +185,12 @@ export default class AudioVisualizer {
     let req = new XMLHttpRequest();
     req.open('GET', this.audioSrc, true);
     req.responseType = 'arraybuffer';
-    this.canvasCtx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.canvasCtx.fillText('Loading...', this.canvas.width / 2 + 10, this.canvas.height / 2 + 50);
-
     req.onload = function () {
       this.ctx.decodeAudioData(req.response, this.playSound.bind(this), this._onError.bind(this));
     }.bind(this);
-
     req.send();
 
-    this._executeHook(this.onLoadHook);
+    this._executeHook(this.onLoadAudioHook);
   };
 
   /**
@@ -287,7 +284,13 @@ export default class AudioVisualizer {
    * Render frame on canvas.
    */
   _renderStatic = () => {
-    this._executeHook(this.onStaticHook)
+    this._executeAsyncHook(this.onAsyncStaticHook)
+      .then(function() {
+        this._executeHook(this.onStaticHook)
+      }.bind(this))
+      .catch(err => {
+        console.log(err);
+      });
   };
 
   /**
@@ -298,6 +301,18 @@ export default class AudioVisualizer {
     for (let i = 0; i < hook.length; i++) {
       hook[i](this);
     }
+  }
+
+  /**
+   * @description
+   * Executer for async hooks
+   */
+  _executeAsyncHook = (hook) => {
+    let promises = [];
+    for (let i = 0; i < hook.length; i++) {
+      promises.push(hook[i](this));
+    }
+    return Promise.all(promises)
   }
 }
 

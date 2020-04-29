@@ -21,6 +21,7 @@
   - [x] on resume stage
   - [x] on end stage
   - [x] render frame stage
+  - [x] add async loader for static rendering 
 - [ ] add some ready to use renderers
   - [x] rounded frequency visualization
   - [x] time visualization

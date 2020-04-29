@@ -4,7 +4,9 @@ import {
   renderProgressbar,
   renderProgressbarShadow,
   renderText,
-  renderTime
+  renderTime,
+  renderLoading,
+  renderBackgroundImg
 } from './defaultRenderHooks.js';
 
 window.addEventListener('DOMContentLoaded', () => {
@@ -25,11 +27,12 @@ window.addEventListener('DOMContentLoaded', () => {
     fftSize: 512,
 
     onInitHook: [],
-    onLoadHook: [],
+    onLoadAudioHook: [renderLoading],
     onStartHook: [],
     onPauseHook: [],
     onResumeHook: [],
     onFrameHook: [renderLounge, renderProgressbar, renderTime],
+    onAsyncStaticHook: [renderBackgroundImg],
     onStaticHook: [renderProgressbarShadow, renderText],
     onEventHook: [],
     onEndHook: []
