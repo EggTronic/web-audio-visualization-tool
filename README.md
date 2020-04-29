@@ -1,9 +1,11 @@
 
-﻿# audio-visualization-toolkit
+# audio-visualization-toolkit
 
 > Customizable audio visualization toolkit build up on web audio api.
-
+> 
 > Demo: https://eggtronic.github.io/audio-visualization-toolkit/
+> 
+> ![preview](/static/preview.jpg)
 
 #### 📝 Todo
 
@@ -21,6 +23,7 @@
   - [x] rounded frequency visualization
   - [x] time visualization
   - [x] progress visualization
+    - [ ] draggable progress bar
   - [ ] album image
   - [ ] start/pause button
   - [ ] next/previous song button
