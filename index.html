@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualize Audio</title>
+</head>
+
+<body>
+    
+    <div class="vz-wrapper">
+        <audio id="myAudio" src="static/reverie.mp3" data-author="浮云心" data-title="Reverie(Remix)"></audio>
+    
+        <div class="vz-wrapper -canvas">
+            <canvas id="myCanvas" width="800" height="400"></canvas>
+        </div>
+    </div>
+    <script src="visualizeAudio.js"></script>
+</body>
+<style>
+    body {
+        margin: 0;
+    }
+    
+    .vz-wrapper {
+        position: relative;
+        height: 100vh;
+        width: 100%;
+        background: -webkit-gradient(radial, center center, 0, center center, 460, from(#396362), to(#000000));
+        background: -webkit-radial-gradient(circle, #396362, #000000);
+        background: -moz-radial-gradient(circle, #396362, #000000);
+        background: -ms-radial-gradient(circle, #396362, #000000);
+        box-shadow: inset 0 0 160px 0 #000;
+        cursor: pointer;
+    }
+    
+    .vz-wrapper.-canvas {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        height: initial;
+        width: initial;
+        background: transparent;
+        box-shadow: none;
+    }
+    
+    @media screen and (min-width: 420px) {
+        .vz-wrapper {
+            box-shadow: inset 0 0 200px 60px #000;
+        }
+    }
+</style>
+
+</html>
