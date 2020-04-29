@@ -14,11 +14,13 @@
     
         <div class="vz-wrapper -canvas">
             <canvas id="myCanvas" width="800" height="400"></canvas>
+            <canvas id="myStaticCanvas" width="800" height="400"></canvas>
         </div>
     </div>
     <script src="visualizeAudio.js"></script>
 </body>
 <style>
+
     body {
         margin: 0;
     }
@@ -35,7 +37,19 @@
         cursor: pointer;
     }
     
-    .vz-wrapper.-canvas {
+    #myCanvas {
+        z-index: 1;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        height: initial;
+        width: initial;
+        background: transparent;
+        box-shadow: none;
+    }
+
+    #myStaticCanvas {
         position: absolute;
         top: 50%;
         left: 50%;

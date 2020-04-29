@@ -10,6 +10,7 @@
 #### 📝 Todo
 - [ ] ** multiple audio source support
 - [ ] ** audio load on fly support
+- [x] add another layer of canvas for rendering static elements
 - [x] class implementation
 - [x] include canvas2d as render engine 
 - [ ] split the lifecycle into serveral stages

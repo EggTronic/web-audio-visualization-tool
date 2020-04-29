@@ -5,7 +5,9 @@ class AudioVisualizer {
         this.loop = cfg.loop || false;
         this.audio = document.getElementById(cfg.audio) || {};
         this.canvas = document.getElementById(cfg.canvas) || {};
+        this.canvasStatic = document.getElementById(cfg.canvasStatic) || {};
         this.canvasCtx = this.canvas.getContext('2d') || null;
+        this.canvasStaticCtx = this.canvasStatic.getContext('2d') || null;
         this.author = this.audio.getAttribute('data-author') || '';
         this.title = this.audio.getAttribute('data-title') || '';
         this.ctx = null;
@@ -16,7 +18,6 @@ class AudioVisualizer {
         this.duration = 0;
         this.minutes = '00';
         this.seconds = '00';
-        this.style = cfg.style || 'lounge';
         this.barWidth = cfg.barWidth || 2;
         this.barHeight = cfg.barHeight || 2;
         this.barSpacing = cfg.barSpacing || 5;
@@ -35,8 +36,10 @@ class AudioVisualizer {
         this.setBufferSourceNode();
         this.setMediaSource();
         this.setCanvasStyles();
+        this.setStaticCanvasStyles();
         this.bindEvents();
-        this.canvasCtx.fillText('Play', this.canvas.width / 2 + 10, this.canvas.height / 2);
+        this.renderStatic();
+        this.canvasCtx.fillText('Play', this.canvas.width / 2 + 10, this.canvas.height / 2 + 50);
     }
 
     /**
@@ -86,6 +89,7 @@ class AudioVisualizer {
         this.sourceNode.onended = function () {
             setTimeout(
                 function () {
+                    console.log(this)
                     clearInterval(this.interval);
                     //this.sourceNode.disconnect();
                     this.isPlaying = false;
@@ -114,10 +118,25 @@ class AudioVisualizer {
         this.gradient = this.canvasCtx.createLinearGradient(0, 0, 0, 300);
         this.gradient.addColorStop(1, this.barColor);
         this.canvasCtx.fillStyle = this.gradient;
-        this.canvasCtx.shadowBlur = this.shadowBlur;
-        this.canvasCtx.shadowColor = this.shadowColor;
+        // this.canvasCtx.shadowBlur = this.shadowBlur;
+        // this.canvasCtx.shadowColor = this.shadowColor;
         this.canvasCtx.font = this.font.join(' ');
         this.canvasCtx.textAlign = 'center';
+    };
+
+    /**
+     * @description
+     * Set static canvas gradient color.
+     *
+     */
+    setStaticCanvasStyles = () => {
+        this.gradient = this.canvasStaticCtx.createLinearGradient(0, 0, 0, 300);
+        this.gradient.addColorStop(1, this.barColor);
+        this.canvasStaticCtx.fillStyle = this.gradient;
+        this.canvasStaticCtx.shadowBlur = this.shadowBlur;
+        this.canvasStaticCtx.shadowColor = this.shadowColor;
+        this.canvasStaticCtx.font = this.font.join(' ');
+        this.canvasStaticCtx.textAlign = 'center';
     };
 
     /**
@@ -130,7 +149,7 @@ class AudioVisualizer {
             if (e.target === this.canvas) {
                 e.stopPropagation();
                 if (!this.isPlaying) {
-                    return (this.ctx.state === 'suspended') ? this.playSound() : this.loadSound();
+                    return (this.ctx.state === "suspended") ? this.playSound() : this.loadSound();
                 } else {
                     return this.pauseSound();
                 }
@@ -151,7 +170,7 @@ class AudioVisualizer {
         req.open('GET', this.audioSrc, true);
         req.responseType = 'arraybuffer';
         this.canvasCtx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.canvasCtx.fillText('Loading...', this.canvas.width / 2 + 10, this.canvas.height / 2);
+        this.canvasCtx.fillText('Loading...', this.canvas.width / 2 + 10, this.canvas.height / 2 + 50);
 
         req.onload = function () {
             this.ctx.decodeAudioData(req.response, this.playSound.bind(this), this.onError.bind(this));
@@ -215,6 +234,8 @@ class AudioVisualizer {
     resetTimer = () => {
         let time = new Date(0, 0);
         this.duration = time.getTime();
+        this.minutes = '00';
+        this.seconds = '00';
     };
 
     /**
@@ -237,14 +258,38 @@ class AudioVisualizer {
         }
 
         this.analyser.getByteFrequencyData(this.frequencyData);
-
         this.canvasCtx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
         this.renderTime();
         this.renderProgressbar();
-        this.renderText();
-        this.renderByStyleType();
+        this.renderLounge();
+
     };
+
+    /**
+     * @description
+     * Render frame on canvas.
+     */
+    renderStatic = () => {
+        this.renderProgressbarShadow();
+        this.renderText();
+        this.renderLounge();
+    };
+
+    renderProgressbarShadow = () => {
+        let cx = this.canvas.width / 2;
+        let cy = this.canvas.height / 2;
+        let correction = 10;
+
+        this.canvasStaticCtx.strokeStyle = this.barColor;
+        this.canvasStaticCtx.lineWidth = '10';
+
+        this.canvasStaticCtx.beginPath();
+        this.canvasStaticCtx.arc(cx + correction, cy, 100, 0.5 * Math.PI, 0.5 * Math.PI + 2 * Math.PI);
+        this.canvasStaticCtx.globalAlpha = 0.1;
+        this.canvasStaticCtx.stroke();
+        this.canvasStaticCtx.closePath();
+        this.canvasStaticCtx.globalAlpha = 1;
+    }
 
     renderProgressbar = () => {
         let cx = this.canvas.width / 2;
@@ -258,18 +303,14 @@ class AudioVisualizer {
 
         if (this.sourceNode.buffer) {
             arcPercent = curDuration / this.sourceNode.buffer.duration;
+            if (arcPercent > 1) {
+                arcPercent = 1;
+            }
             this.canvasCtx.beginPath();
             this.canvasCtx.arc(cx + correction, cy, 100, 0.5 * Math.PI, 0.5 * Math.PI + arcPercent * 2 * Math.PI);
             this.canvasCtx.stroke();
             this.canvasCtx.closePath();
         }
-
-        this.canvasCtx.beginPath();
-        this.canvasCtx.arc(cx + correction, cy, 100, 0.5 * Math.PI, 0.5 * Math.PI + 2 * Math.PI);
-        this.canvasCtx.globalAlpha = 0.1;
-        this.canvasCtx.stroke();
-        this.canvasCtx.closePath();
-        this.canvasCtx.globalAlpha = 1;
     };
 
     /**
@@ -281,12 +322,12 @@ class AudioVisualizer {
         let cy = this.canvas.height / 2;
         let correction = 10;
 
-        this.canvasCtx.textBaseline = 'top';
-        this.canvasCtx.fillText('by ' + this.author, cx + correction, cy);
-        this.canvasCtx.font = parseInt(this.font[0], 10) + 8 + 'px ' + this.font[1];
-        this.canvasCtx.textBaseline = 'bottom';
-        this.canvasCtx.fillText(this.title, cx + correction, cy);
-        this.canvasCtx.font = this.font.join(' ');
+        this.canvasStaticCtx.textBaseline = 'top';
+        this.canvasStaticCtx.fillText('by ' + this.author, cx + correction, cy);
+        this.canvasStaticCtx.font = parseInt(this.font[0], 10) + 8 + 'px ' + this.font[1];
+        this.canvasStaticCtx.textBaseline = 'bottom';
+        this.canvasStaticCtx.fillText(this.title, cx + correction, cy);
+        this.canvasStaticCtx.font = this.font.join(' ');
     };
 
     /**
@@ -296,16 +337,6 @@ class AudioVisualizer {
     renderTime = () => {
         let time = this.minutes + ':' + this.seconds;
         this.canvasCtx.fillText(time, this.canvas.width / 2 + 10, this.canvas.height / 2 + 40);
-    };
-
-    /**
-     * @description
-     * Render frame by style type.
-     *
-     * @return {Function}
-     */
-    renderByStyleType = () => {
-        return this[AudioVisualizer.TYPE[this.style]]();
     };
 
     /**
@@ -351,12 +382,12 @@ document.addEventListener('DOMContentLoaded', () => {
         loop: false,
         audio: 'myAudio',
         canvas: 'myCanvas',
-        style: 'lounge',
+        canvasStatic: 'myStaticCanvas',
         barWidth: 2,
         barHeight: 5,
         barSpacing: 7,
         barColor: '#cafdff',
-        shadowBlur: 20,
+        shadowBlur: 20, // only of static canvas for performance issue
         shadowColor: '#ffffff',
         font: ['12px', 'Helvetica'],
         
