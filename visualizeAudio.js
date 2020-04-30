@@ -155,7 +155,11 @@ export default class AudioVisualizer {
    * Execute hooks before playing sound
    */
   loadSound = () => {
-    this._executeHook(this.onLoadAudioHook);
+    setTimeout(
+      function(){
+        this._executeHook(this.onLoadAudioHook);
+      }.bind(this)
+    , 0);
     this.playSound.bind(this);
   };
 
@@ -199,9 +203,18 @@ export default class AudioVisualizer {
    *
    * @param  {Object} e
    */
-  _onError = (e) => {
+  onError = (e) => {
     console.info('Error decoding audio file. -- ', e);
   };
+
+  /**
+   * @description
+   * On audio data stream ended fn.
+   * if loop is true, then audio will never be ended
+   */
+  _onAudioEnd = () => {
+    this._executeHook(this.onEndHook);
+  }
 
   /**
    * @description
@@ -212,13 +225,14 @@ export default class AudioVisualizer {
       setTimeout(function () {
         requestAnimationFrame(this._renderFrame.bind(this));
       }.bind(this), 1000 / this.framesPerSecond);
+      // requestAnimationFrame(this._renderFrame.bind(this));
     }
 
     this._updateTime();
     this.analyser.getByteFrequencyData(this.frequencyData);
     this.canvasCtx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-    this._executeHook(this.onFrameHook)
+    this._executeHook(this.onFrameHook);
   };
 
   /**
@@ -228,6 +242,7 @@ export default class AudioVisualizer {
    */
   _updateTime = () => {
     // check if audio is ended
+    // if loop is true, then audio will never be ended
     if (this.audio.ended) {
       this.isPlaying = false;
     }
@@ -246,12 +261,12 @@ export default class AudioVisualizer {
    * Render frame on canvas.
    */
   _renderStatic = () => {
-    this._executeAsyncHook(this.onAsyncStaticHook)
+    this._executePromiseAllHook(this.onAsyncStaticHook)
       .then(function () {
         this._executeHook(this.onStaticHook)
       }.bind(this))
       .catch(err => {
-        console.log(err);
+        this.onError(err);
       });
   };
 
@@ -265,11 +280,23 @@ export default class AudioVisualizer {
     }
   }
 
-  /**
+    /**
    * @description
    * Executer for async hooks
    */
   _executeAsyncHook = (hook) => {
+    let promise = hook[0](this)
+    for (let i = 1; i < hook.length; i++) {
+      promise = promise.then(() => hook[i](this));
+    }
+    return promise;
+  }
+
+  /**
+   * @description
+   * Executer for promiseAll hooks
+   */
+  _executePromiseAllHook = (hook) => {
     let promises = [];
     for (let i = 0; i < hook.length; i++) {
       promises.push(hook[i](this));

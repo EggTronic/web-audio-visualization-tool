@@ -3,28 +3,49 @@
  * Render lounge style type.
  */
 export const renderLounge = (avCtx) => {
-  let cx = avCtx.canvas.width / 2;
-  let cy = avCtx.canvas.height / 2;
-  let radius = 140;
-  let maxBarNum = Math.floor((radius * 2 * Math.PI) / (avCtx.barWidth + avCtx.barSpacing));
-  let slicedPercent = Math.floor((maxBarNum * 25) / 100);
-  let barNum = maxBarNum - slicedPercent;
-  let freqJump = Math.floor(avCtx.frequencyData.length / maxBarNum);
+  const renderer = (portion, avCtx) => {
+    let cx = avCtx.canvas.width / 2;
+    let cy = avCtx.canvas.height / 2;
+    let radius = 140;
+    let maxBarNum = Math.floor((radius * 2 * Math.PI) / (avCtx.barWidth + avCtx.barSpacing));
+    let slicedPercent = Math.floor((maxBarNum * 25) / 100);
+    let barNum = maxBarNum - slicedPercent;
+    let freqJump = Math.floor(avCtx.frequencyData.length / maxBarNum);
+    if (portion > 1) {
+      avCtx.canvasCtx.clearRect(0, 0, avCtx.canvas.width, avCtx.canvas.height);
+    }
+    for (let i = 0; i < barNum; i++) {
+      let amplitude = avCtx.isPlaying ? avCtx.frequencyData[i * freqJump] : avCtx.frequencyData[i * freqJump]/portion;
+      let alfa = (i * 2 * Math.PI) / maxBarNum;
+      let beta = (3 * 45 - avCtx.barWidth) * Math.PI / 180;
+      let x = 0;
+      let y = radius - (amplitude / 12 - avCtx.barHeight);
+      let w = avCtx.barWidth;
+      let h = amplitude / 6 + avCtx.barHeight;
+  
+      avCtx.canvasCtx.save();
+      avCtx.canvasCtx.translate(cx + avCtx.barSpacing, cy + avCtx.barSpacing);
+      avCtx.canvasCtx.rotate(alfa - beta);
+      avCtx.canvasCtx.fillRect(x, y, w, h);
+      avCtx.canvasCtx.restore();
+    }
+  }
 
-  for (let i = 0; i < barNum; i++) {
-    let amplitude = avCtx.frequencyData[i * freqJump];
-    let alfa = (i * 2 * Math.PI) / maxBarNum;
-    let beta = (3 * 45 - avCtx.barWidth) * Math.PI / 180;
-    let x = 0;
-    let y = radius - (amplitude / 12 - avCtx.barHeight);
-    let w = avCtx.barWidth;
-    let h = amplitude / 6 + avCtx.barHeight;
-
-    avCtx.canvasCtx.save();
-    avCtx.canvasCtx.translate(cx + avCtx.barSpacing, cy + avCtx.barSpacing);
-    avCtx.canvasCtx.rotate(alfa - beta);
-    avCtx.canvasCtx.fillRect(x, y, w, h);
-    avCtx.canvasCtx.restore();
+  if (!avCtx.isPlaying) {
+    for (let i = 2; i <= 100; i+=2) {
+      setTimeout(
+        function () {
+          renderer(i, avCtx);
+          avCtx._executeHook(avCtx.onPauseHook);
+        }
+      , i)
+    }
+  } else {
+    setTimeout(
+      function () {
+        renderer(1, avCtx);
+      }
+    , 0)
   }
 };
 
@@ -53,19 +74,23 @@ export const renderProgressbarShadow = (avCtx) => {
  * Render progressbar.
  */
 export const renderProgressbar = (avCtx) => {
-  let cx = avCtx.canvas.width / 2;
-  let cy = avCtx.canvas.height / 2;
-  let correction = 10;
-  
-  let arcPercent;
-  avCtx.canvasCtx.strokeStyle = avCtx.barColor;
-  avCtx.canvasCtx.lineWidth = '10';
+  const renderer = (avCtx) => {
+    let cx = avCtx.canvas.width / 2;
+    let cy = avCtx.canvas.height / 2;
+    let correction = 10;
 
-  arcPercent = avCtx.audio.currentTime / avCtx.audio.duration;
-  avCtx.canvasCtx.beginPath();
-  avCtx.canvasCtx.arc(cx + correction, cy, 100, 0.5 * Math.PI, 0.5 * Math.PI + arcPercent * 2 * Math.PI);
-  avCtx.canvasCtx.stroke();
-  avCtx.canvasCtx.closePath();
+    let arcPercent;
+    avCtx.canvasCtx.strokeStyle = avCtx.barColor;
+    avCtx.canvasCtx.lineWidth = '10';
+
+    arcPercent = avCtx.audio.currentTime / avCtx.audio.duration;
+    avCtx.canvasCtx.beginPath();
+    avCtx.canvasCtx.arc(cx + correction, cy, 100, 0.5 * Math.PI, 0.5 * Math.PI + arcPercent * 2 * Math.PI);
+    avCtx.canvasCtx.stroke();
+    avCtx.canvasCtx.closePath();
+  }
+
+  renderer(avCtx);
 };
 
 /**
@@ -90,8 +115,12 @@ export const renderText = (avCtx) => {
  * Render audio time.
  */
 export const renderTime = (avCtx) => {
-  let time = avCtx.minutes + ':' + avCtx.seconds;
-  avCtx.canvasCtx.fillText(time, avCtx.canvas.width / 2 + 10, avCtx.canvas.height / 2 + 40);
+  const renderer = (avCtx) => {
+    let time = avCtx.minutes + ':' + avCtx.seconds;
+    avCtx.canvasCtx.fillText(time, avCtx.canvas.width / 2 + 10, avCtx.canvas.height / 2 + 40);
+  }
+    
+  renderer(avCtx);
 };
 
 /**
@@ -113,7 +142,7 @@ export const renderBackgroundImg = (avCtx) => {
   return loadImage(src)
     .then(img => {
       avCtx.canvasStaticCtx.globalAlpha = 0.8;
-      avCtx.canvasStaticCtx.drawImage(img,0,0);
+      avCtx.canvasStaticCtx.drawImage(img, 0, 0);
       avCtx.canvasStaticCtx.globalAlpha = 1;
     });
 };
@@ -144,6 +173,6 @@ export const renderPlayButton = (avCtx) => {
         return avCtx.pauseSound();
       }
     }
-  }); 
+  });
 }
 

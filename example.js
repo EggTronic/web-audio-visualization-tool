@@ -26,12 +26,12 @@ window.addEventListener('DOMContentLoaded', () => {
     shadowColor: '#ffffff', // only of static canvas for performance issue
     font: ['12px', 'Helvetica'],
     fftSize: 512,
-    framesPerSecond: 30, // the refresh rate for rendering canvas (not static canvas)
+    framesPerSecond: 60, // the refresh rate for rendering canvas (not static canvas)
 
     onInitHook: [renderPlayButton],
     onLoadAudioHook: [renderLoading],
     onStartHook: [],
-    onPauseHook: [],
+    onPauseHook: [renderProgressbar, renderTime],
     onResumeHook: [],
     onFrameHook: [renderLounge, renderProgressbar, renderTime],
     onAsyncStaticHook: [renderBackgroundImg],
