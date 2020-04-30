@@ -12,9 +12,9 @@
 ---
 ## ✨ Features
 - 🌈 Customizable - provides lifecycle hooks for audio visualization and interaction.
-- 🛡 Modularity - user your imagination to create your own audio visualization or audio player
-- 📦 Lightweight - core class only has few hundreds lines of code
-- 🎨 Ready to go - there are some implemented hooks for your choice
+- 🛡 Modularity - user your imagination to create your own audio visualization or audio player.
+- 📦 Lightweight - only few lines of code.
+- 🎨 Ready to go - there are some implemented hooks for your choice.
 
 --- 
 ## 🖥 Environment Support
