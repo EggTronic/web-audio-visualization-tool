@@ -169,6 +169,7 @@ export const renderPlayButton = (avCtx) => {
       e.stopPropagation();
       if (!avCtx.isPlaying) {
         if (avCtx.isLoading) {
+          console.log(1);
           return;
         }
         return (avCtx.audio.paused) ? avCtx.playSound() : avCtx.loadSound();
