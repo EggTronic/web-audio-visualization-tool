@@ -6,7 +6,7 @@
 > It currently uses canvas2D as the graphic engine, I will implement the ability to use Three.js later.
 > 
 
-> Demo: https://eggtronic.github.io/audio-visualization-toolkit/
+> Demo: https://eggtronic.github.io/web-audio-visualization-tool/
 > 
 > ![preview](/static/preview.jpg)
 ---
