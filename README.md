@@ -12,7 +12,7 @@
 ---
 ## ✨ Features
 - 🌈 Customizable - provides lifecycle hooks for audio visualization and interaction.
-- 🛡 Modularity - use your imagination to create your own audio visualization or audio player.
+- 🛡 Modularity - use imagination to create your own audio visualization or audio player.
 - 📦 Lightweight - only few lines of code.
 - 🎨 Ready to go - there are some ready to use hooks implemented for you.
 
