@@ -83,12 +83,20 @@ export const renderProgressbar = (avCtx) => {
     let correction = 10;
 
     let arcPercent;
-    avCtx.canvasCtx.strokeStyle = avCtx.theme.barColor;
-    avCtx.canvasCtx.lineWidth = '10';
-
     arcPercent = avCtx.audio.currentTime / avCtx.audio.duration;
+    let drift = (arcPercent * Math.PI) % (1.5 * Math.PI) * 10
+
+    avCtx.canvasCtx.strokeStyle = avCtx.theme.barColor;
+
     avCtx.canvasCtx.beginPath();
-    avCtx.canvasCtx.arc(cx + correction, cy, 100, 0.5 * Math.PI, 0.5 * Math.PI + arcPercent * 2 * Math.PI);
+    avCtx.canvasCtx.lineWidth = '10';
+    avCtx.canvasCtx.arc(cx + correction, cy, 95, 0.5 * Math.PI + drift*2, 0.5 * Math.PI + arcPercent * 2 * Math.PI + drift*2);
+    avCtx.canvasCtx.stroke();
+    avCtx.canvasCtx.closePath();
+
+    avCtx.canvasCtx.beginPath();
+    avCtx.canvasCtx.lineWidth = '3';
+    avCtx.canvasCtx.arc(cx + correction, cy, 85, 0.5 * Math.PI - drift, 0.5 * Math.PI - arcPercent * 2 * Math.PI - drift);
     avCtx.canvasCtx.stroke();
     avCtx.canvasCtx.closePath();
   }
