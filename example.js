@@ -7,7 +7,9 @@ import {
   renderTime,
   renderLoading,
   renderBackgroundImg,
-  renderPlayButton
+  renderPlayButton,
+  setCanvasStyle,
+  setStaticCanvasStyle
 } from './defaultRenderHooks.js';
 
 window.addEventListener('DOMContentLoaded', () => {
@@ -15,42 +17,55 @@ window.addEventListener('DOMContentLoaded', () => {
   let audioVisualizer = new AudioVisualizer({
     autoplay: false,
     loop: true,
-    fftSize: 512,
+    fftSize: 512, // the frequency sample size for audio analyzer
     // framesPerSecond: 60, // the refresh rate for rendering canvas (not static canvas)
 
     audio: 'myAudio',
-    canvas: 'myCanvas',
-    canvasStatic: 'myStaticCanvas',
-    yourCanvases: [],
+    canvas: 'myCanvas', // main canvas for rendering frames
+    canvasStatic: 'myStaticCanvas', // static canvas
+    customCanvases: [], // you can add your own canvases
 
-    barWidth: 2,
-    barHeight: 5,
-    barSpacing: 7,
-    barColor: '#cafdff',
-    shadowBlur: 20, // only of static canvas for performance issue
-    shadowColor: '#ffffff', // only of static canvas for performance issue
-    font: ['12px', 'Helvetica'],
+    // customize your theme
+    theme: {
+      barWidth: 2,
+      barHeight: 5,
+      barSpacing: 7,
+      barColor: '#cafdff',
+      shadowBlur: 20, // avoid this attribute for rendering frames, it can reduce the performance
+      shadowColor: '#ffffff',
+      font: ['12px', 'Helvetica'],
+    },
+    
+    // hooks contain callbacks just before/after differency lifecycle stage
+    // cb in before hooks should return promises
+    beforeInitHook: [], 
+    afterInitHook: [setCanvasStyle, setStaticCanvasStyle, renderPlayButton],
 
-    beforeInitHook: [], // each cb should return promises
-    afterInitHook: [renderPlayButton],
-
-    beforeLoadAudioHook: [renderLoading], // each cb should return promises
+    beforeLoadAudioHook: [renderLoading],
     afterLoadAudioHook: [],
 
     beforeStartHook: [],
     afterStartHook: [],
 
-    beforePauseHook: [], // each cb should return promises
+    beforePauseHook: [],
     afterPauseHook: [renderProgressbar, renderTime],
 
-    beforeResumeHook: [], // each cb should return promises
+    beforeResumeHook: [],
     afterResumeHook: [],
 
-    beforeStaticHook: [renderBackgroundImg], // each cb should return promises
+    // hook for static canvas
+    beforeStaticHook: [renderBackgroundImg],
     onStaticHook: [renderProgressbarShadow, renderText],
 
+    // hooks that will be excuted for each frame
+    // used for the main canvas
     onFrameHook: [renderLounge, renderProgressbar, renderTime],
+
+    // you may bind your events here
     onEventHook: [],
+
+    // you may release some resourse here 
+    // if loop is ture this hook will not be excuted
     onEndHook: []
   })
   audioVisualizer.init();

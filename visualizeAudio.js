@@ -25,6 +25,7 @@ export default class AudioVisualizer {
     this.canvasStatic = document.getElementById(cfg.canvasStatic) || {};
     this.canvasCtx = this.canvas.getContext('2d') || null;
     this.canvasStaticCtx = this.canvasStatic.getContext('2d') || null;
+    this.customCanvases = cfg.customCanvases || [];
     this.author = this.audio.getAttribute('data-author') || '';
     this.title = this.audio.getAttribute('data-title') || '';
     this.ctx = null;
@@ -35,15 +36,17 @@ export default class AudioVisualizer {
     this.frequencyData = [];
     this.minutes = "00";
     this.seconds = "00";
-    this.barWidth = cfg.barWidth || 2;
-    this.barHeight = cfg.barHeight || 2;
-    this.barSpacing = cfg.barSpacing || 5;
-    this.barColor = cfg.barColor || '#ffffff';
-    this.shadowBlur = cfg.shadowBlur || 10;
-    this.shadowColor = cfg.shadowColor || '#ffffff';
-    this.font = cfg.font || ['12px', 'Helvetica'];
-    this.gradient = null;
-    this.interval = null;
+    this.theme = cfg.theme || {
+      barWidth: 2,
+      barHeight: 5,
+      barSpacing: 7,
+      barColor: '#cafdff',
+      shadowBlur: 20,
+      shadowColor: '#ffffff',
+      font: ['12px', 'Helvetica'],
+      gradient: null,
+      interval: null
+    }
   }
 
   init = () => {
@@ -53,8 +56,6 @@ export default class AudioVisualizer {
         this._setFrequencyData();
         this._setBufferSourceNode();
         this._setMediaSource();
-        this._setCanvasStyles();
-        this._setStaticCanvasStyles();
         this._bindEvents();
         this._renderStatic();
         if (this.autoplay) {
@@ -119,34 +120,6 @@ export default class AudioVisualizer {
    */
   _setMediaSource = () => {
     this.audioSrc = this.audio.getAttribute('src');
-  };
-
-  /**
-   * @description
-   * Set canvas gradient color.
-   *
-   */
-  _setCanvasStyles = () => {
-    this.gradient = this.canvasCtx.createLinearGradient(0, 0, 0, 300);
-    this.gradient.addColorStop(1, this.barColor);
-    this.canvasCtx.fillStyle = this.gradient;
-    this.canvasCtx.font = this.font.join(' ');
-    this.canvasCtx.textAlign = 'center';
-  };
-
-  /**
-   * @description
-   * Set static canvas gradient color.
-   *
-   */
-  _setStaticCanvasStyles = () => {
-    this.gradient = this.canvasStaticCtx.createLinearGradient(0, 0, 0, 300);
-    this.gradient.addColorStop(1, this.barColor);
-    this.canvasStaticCtx.fillStyle = this.gradient;
-    this.canvasStaticCtx.shadowBlur = this.shadowBlur;
-    this.canvasStaticCtx.shadowColor = this.shadowColor;
-    this.canvasStaticCtx.font = this.font.join(' ');
-    this.canvasStaticCtx.textAlign = 'center';
   };
 
   /**

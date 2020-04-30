@@ -7,7 +7,7 @@ export const renderLounge = (avCtx) => {
     let cx = avCtx.canvas.width / 2;
     let cy = avCtx.canvas.height / 2;
     let radius = 140;
-    let maxBarNum = Math.floor((radius * 2 * Math.PI) / (avCtx.barWidth + avCtx.barSpacing));
+    let maxBarNum = Math.floor((radius * 2 * Math.PI) / (avCtx.theme.barWidth + avCtx.theme.barSpacing));
     let slicedPercent = Math.floor((maxBarNum * 25) / 100);
     let barNum = maxBarNum - slicedPercent;
     let freqJump = Math.floor(avCtx.frequencyData.length / maxBarNum);
@@ -17,14 +17,14 @@ export const renderLounge = (avCtx) => {
     for (let i = 0; i < barNum; i++) {
       let amplitude = avCtx.isPlaying ? avCtx.frequencyData[i * freqJump] : avCtx.frequencyData[i * freqJump]/portion;
       let alfa = (i * 2 * Math.PI) / maxBarNum;
-      let beta = (3 * 45 - avCtx.barWidth) * Math.PI / 180;
+      let beta = (3 * 45 - avCtx.theme.barWidth) * Math.PI / 180;
       let x = 0;
-      let y = radius - (amplitude / 12 - avCtx.barHeight);
-      let w = avCtx.barWidth;
-      let h = amplitude / 6 + avCtx.barHeight;
+      let y = radius - (amplitude / 12 - avCtx.theme.barHeight);
+      let w = avCtx.theme.barWidth;
+      let h = amplitude / 6 + avCtx.theme.barHeight;
   
       avCtx.canvasCtx.save();
-      avCtx.canvasCtx.translate(cx + avCtx.barSpacing, cy + avCtx.barSpacing);
+      avCtx.canvasCtx.translate(cx + avCtx.theme.barSpacing, cy + avCtx.theme.barSpacing);
       avCtx.canvasCtx.rotate(alfa - beta);
       avCtx.canvasCtx.fillRect(x, y, w, h);
       avCtx.canvasCtx.restore();
@@ -60,7 +60,7 @@ export const renderProgressbarShadow = (avCtx) => {
   let cy = avCtx.canvas.height / 2;
   let correction = 10;
 
-  avCtx.canvasStaticCtx.strokeStyle = avCtx.barColor;
+  avCtx.canvasStaticCtx.strokeStyle = avCtx.theme.barColor;
   avCtx.canvasStaticCtx.lineWidth = '10';
 
   avCtx.canvasStaticCtx.beginPath();
@@ -76,13 +76,14 @@ export const renderProgressbarShadow = (avCtx) => {
  * Render progressbar.
  */
 export const renderProgressbar = (avCtx) => {
+  //console.log(avCtx);
   const renderer = (avCtx) => {
     let cx = avCtx.canvas.width / 2;
     let cy = avCtx.canvas.height / 2;
     let correction = 10;
 
     let arcPercent;
-    avCtx.canvasCtx.strokeStyle = avCtx.barColor;
+    avCtx.canvasCtx.strokeStyle = avCtx.theme.barColor;
     avCtx.canvasCtx.lineWidth = '10';
 
     arcPercent = avCtx.audio.currentTime / avCtx.audio.duration;
@@ -106,10 +107,10 @@ export const renderText = (avCtx) => {
 
   avCtx.canvasStaticCtx.textBaseline = 'top';
   avCtx.canvasStaticCtx.fillText('by ' + avCtx.author, cx + correction, cy);
-  avCtx.canvasStaticCtx.font = parseInt(avCtx.font[0], 10) + 8 + 'px ' + avCtx.font[1];
+  avCtx.canvasStaticCtx.font = parseInt(avCtx.theme.font[0], 10) + 8 + 'px ' + avCtx.theme.font[1];
   avCtx.canvasStaticCtx.textBaseline = 'bottom';
   avCtx.canvasStaticCtx.fillText(avCtx.title, cx + correction, cy);
-  avCtx.canvasStaticCtx.font = avCtx.font.join(' ');
+  avCtx.canvasStaticCtx.font = avCtx.theme.font.join(' ');
 };
 
 /**
@@ -187,4 +188,31 @@ export const renderPlayButton = (avCtx) => {
     }
   });
 }
+
+/**
+ * @description
+ * init main canvas style
+ */
+export const setCanvasStyle = (avCtx) => {
+  avCtx.theme.gradient = avCtx.canvasCtx.createLinearGradient(0, 0, 0, 300);
+  avCtx.theme.gradient.addColorStop(1, avCtx.theme.barColor);
+  avCtx.canvasCtx.fillStyle = avCtx.theme.gradient;
+  avCtx.canvasCtx.font = avCtx.theme.font.join(' ');
+  avCtx.canvasCtx.textAlign = 'center';
+}
+
+/**
+ * @description
+ * init static canvas style
+ */
+export const setStaticCanvasStyle = (avCtx) => {
+  avCtx.theme.gradient = avCtx.canvasStaticCtx.createLinearGradient(0, 0, 0, 300);
+  avCtx.theme.gradient.addColorStop(1, avCtx.theme.barColor);
+  avCtx.canvasStaticCtx.fillStyle = avCtx.theme.gradient;
+  avCtx.canvasStaticCtx.shadowBlur = avCtx.theme.shadowBlur;
+  avCtx.canvasStaticCtx.shadowColor = avCtx.theme.shadowColor;
+  avCtx.canvasStaticCtx.font = avCtx.theme.font.join(' ');
+  avCtx.canvasStaticCtx.textAlign = 'center';
+}
+
 
