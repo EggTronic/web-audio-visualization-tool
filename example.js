@@ -31,22 +31,22 @@ window.addEventListener('DOMContentLoaded', () => {
     shadowColor: '#ffffff', // only of static canvas for performance issue
     font: ['12px', 'Helvetica'],
 
-    beforeInitHook: [], // should return promises
+    beforeInitHook: [], // each cb should return promises
     afterInitHook: [renderPlayButton],
 
-    beforeLoadAudioHook: [renderLoading], // should return promises
+    beforeLoadAudioHook: [renderLoading], // each cb should return promises
     afterLoadAudioHook: [],
 
     beforeStartHook: [],
     afterStartHook: [],
 
-    beforePauseHook: [], // should return promises
+    beforePauseHook: [], // each cb should return promises
     afterPauseHook: [renderProgressbar, renderTime],
 
-    beforeResumeHook: [],
+    beforeResumeHook: [], // each cb should return promises
     afterResumeHook: [],
 
-    beforeStaticHook: [renderBackgroundImg],
+    beforeStaticHook: [renderBackgroundImg], // each cb should return promises
     onStaticHook: [renderProgressbarShadow, renderText],
 
     onFrameHook: [renderLounge, renderProgressbar, renderTime],
