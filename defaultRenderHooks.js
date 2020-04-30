@@ -36,14 +36,16 @@ export const renderLounge = (avCtx) => {
       setTimeout(
         function () {
           renderer(i, avCtx);
-          avCtx._executeHook(avCtx.onPauseHook);
+          avCtx._executeHook(avCtx.afterPauseHook);
         }
       , i*5)
     }
   } else {
     setTimeout(
       function () {
+        avCtx.canvasCtx.clearRect(0, 0, avCtx.canvas.width, avCtx.canvas.height);
         renderer(1, avCtx);
+        avCtx._executeHook(avCtx.afterPauseHook);
       }
     , 0)
   }
@@ -152,8 +154,15 @@ export const renderBackgroundImg = (avCtx) => {
  * Render loading.
  */
 export const renderLoading = (avCtx) => {
-  avCtx.canvasCtx.clearRect(0, 0, avCtx.canvas.width, avCtx.canvas.height);
-  avCtx.canvasCtx.fillText('Loading...', avCtx.canvas.width / 2 + 10, avCtx.canvas.height / 2 + 50);
+  const renderer = (avCtx) => {
+    avCtx.canvasCtx.clearRect(0, 0, avCtx.canvas.width, avCtx.canvas.height);
+    avCtx.canvasCtx.fillText('Loading...', avCtx.canvas.width / 2 + 10, avCtx.canvas.height / 2 + 50);
+  }
+  
+  return new Promise((reslove, reject) => {
+    renderer(avCtx)
+    reslove();
+  })
 }
 
 /**
