@@ -106,6 +106,7 @@ export const renderText = (avCtx) => {
   let correction = 10;
 
   avCtx.canvasStaticCtx.textBaseline = 'top';
+  avCtx.canvasStaticCtx.fillStyle = avCtx.theme.barColor;
   avCtx.canvasStaticCtx.fillText('by ' + avCtx.author, cx + correction, cy);
   avCtx.canvasStaticCtx.font = parseInt(avCtx.theme.font[0], 10) + 8 + 'px ' + avCtx.theme.font[1];
   avCtx.canvasStaticCtx.textBaseline = 'bottom';
@@ -144,8 +145,32 @@ export const renderBackgroundImg = (avCtx) => {
   let src = "https://www.success.com/wp-content/uploads/2017/01/What-Is-Your-Dream-1024x682.jpg";
   return loadImage(src)
     .then(img => {
-      avCtx.canvasStaticCtx.globalAlpha = 0.8;
+      let cx = avCtx.canvas.width / 2;
+      let cy = avCtx.canvas.height / 2;
+      let correction = 10;
+      avCtx.canvasStaticCtx.globalAlpha = 0.9;
       avCtx.canvasStaticCtx.drawImage(img, 0, 0);
+
+      avCtx.canvasStaticCtx.beginPath();
+      avCtx.canvasStaticCtx.globalAlpha = 0.12;
+      avCtx.canvasStaticCtx.fillStyle = "black";
+      avCtx.canvasStaticCtx.arc(cx + correction, cy, 380, 0.5 * Math.PI, 0.5 * Math.PI + 2 * Math.PI);
+      avCtx.canvasStaticCtx.fill();
+      avCtx.canvasStaticCtx.closePath();
+
+      avCtx.canvasStaticCtx.beginPath();
+      avCtx.canvasStaticCtx.globalAlpha = 0.05;
+      avCtx.canvasStaticCtx.fillStyle = "red";
+      avCtx.canvasStaticCtx.arc(cx + correction, cy, 280, 0.5 * Math.PI, 0.5 * Math.PI + 2 * Math.PI);
+      avCtx.canvasStaticCtx.fill();
+      avCtx.canvasStaticCtx.closePath();
+
+      avCtx.canvasStaticCtx.beginPath();
+      avCtx.canvasStaticCtx.globalAlpha = 0.7;
+      avCtx.canvasStaticCtx.fillStyle = "black";
+      avCtx.canvasStaticCtx.arc(cx + correction, cy, 90, 0.5 * Math.PI, 0.5 * Math.PI + 2 * Math.PI);
+      avCtx.canvasStaticCtx.fill();
+      avCtx.canvasStaticCtx.closePath();
       avCtx.canvasStaticCtx.globalAlpha = 1;
     });
 };

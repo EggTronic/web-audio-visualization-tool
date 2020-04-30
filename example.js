@@ -30,7 +30,7 @@ window.addEventListener('DOMContentLoaded', () => {
       barWidth: 2,
       barHeight: 5,
       barSpacing: 7,
-      barColor: '#cafdff',
+      barColor: '#ffffff',
       shadowBlur: 20, // avoid this attribute for rendering frames, it can reduce the performance
       shadowColor: '#ffffff',
       font: ['12px', 'Helvetica'],
