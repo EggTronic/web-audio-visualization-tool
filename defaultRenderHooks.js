@@ -156,14 +156,14 @@ export const renderBackgroundImg = (avCtx) => {
   };
 
   let srcs = [
-    //"https://www.success.com/wp-content/uploads/2017/01/What-Is-Your-Dream-1024x682.jpg",
+    "https://i.ya-webdesign.com/images/angel-ring-png-3.png",
     "https://pngimg.com/uploads/wings/wings_PNG31.png"
   ];
 
   // options for each image
   // [alpha, x, y, width, height]
   let options = [
-    //[0.9, 0, 0, 800, 800],
+    [0.9, 500, 140, 200, 200],
     [0.7, 0, 370, 1200, 300]
   ]
 
