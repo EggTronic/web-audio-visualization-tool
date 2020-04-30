@@ -15,16 +15,16 @@ export const renderLounge = (avCtx) => {
       avCtx.canvasCtx.clearRect(0, 0, avCtx.canvas.width, avCtx.canvas.height);
     }
     for (let i = 0; i < barNum; i++) {
-      let amplitude = avCtx.isPlaying ? avCtx.frequencyData[i * freqJump] : avCtx.frequencyData[i * freqJump]/portion;
+      let amplitude = avCtx.isPlaying ? avCtx.frequencyData[i * freqJump] : avCtx.frequencyData[i * freqJump] / portion;
       let alfa = (i * 2 * Math.PI) / maxBarNum;
       let beta = (3 * 45 - avCtx.theme.barWidth) * Math.PI / 180;
       let x = 0;
       let y = radius - (amplitude / 12 - avCtx.theme.barHeight);
       let w = avCtx.theme.barWidth;
       let h = amplitude / 6 + avCtx.theme.barHeight;
-  
+
       avCtx.canvasCtx.save();
-      avCtx.canvasCtx.translate(cx + avCtx.theme.barSpacing, cy + avCtx.theme.barSpacing);
+      avCtx.canvasCtx.translate(cx + avCtx.theme.barSpacing - 10, cy + avCtx.theme.barSpacing);
       avCtx.canvasCtx.rotate(alfa - beta);
       avCtx.canvasCtx.fillRect(x, y, w, h);
       avCtx.canvasCtx.restore();
@@ -32,13 +32,13 @@ export const renderLounge = (avCtx) => {
   }
 
   if (!avCtx.isPlaying) {
-    for (let i = 2; i <= 100; i+=2) {
+    for (let i = 2; i <= 100; i += 2) {
       setTimeout(
         function () {
           renderer(i, avCtx);
           avCtx._executeHook(avCtx.afterPauseHook);
         }
-      , i*5)
+        , i * 5)
     }
   } else {
     setTimeout(
@@ -47,7 +47,7 @@ export const renderLounge = (avCtx) => {
         renderer(1, avCtx);
         avCtx._executeHook(avCtx.afterPauseHook);
       }
-    , 0)
+      , 0)
   }
 };
 
@@ -58,7 +58,7 @@ export const renderLounge = (avCtx) => {
 export const renderProgressbarShadow = (avCtx) => {
   let cx = avCtx.canvas.width / 2;
   let cy = avCtx.canvas.height / 2;
-  let correction = 10;
+  let correction = 0;
 
   avCtx.canvasStaticCtx.strokeStyle = avCtx.theme.barColor;
   avCtx.canvasStaticCtx.lineWidth = '10';
@@ -80,7 +80,7 @@ export const renderProgressbar = (avCtx) => {
   const renderer = (avCtx) => {
     let cx = avCtx.canvas.width / 2;
     let cy = avCtx.canvas.height / 2;
-    let correction = 10;
+    let correction = 0;
 
     let arcPercent;
     arcPercent = avCtx.audio.currentTime / avCtx.audio.duration;
@@ -90,7 +90,7 @@ export const renderProgressbar = (avCtx) => {
 
     avCtx.canvasCtx.beginPath();
     avCtx.canvasCtx.lineWidth = '10';
-    avCtx.canvasCtx.arc(cx + correction, cy, 95, 0.5 * Math.PI + drift*2, 0.5 * Math.PI + arcPercent * 2 * Math.PI + drift*2);
+    avCtx.canvasCtx.arc(cx + correction, cy, 95, 0.5 * Math.PI + drift * 2, 0.5 * Math.PI + arcPercent * 2 * Math.PI + drift * 2);
     avCtx.canvasCtx.stroke();
     avCtx.canvasCtx.closePath();
 
@@ -111,7 +111,7 @@ export const renderProgressbar = (avCtx) => {
 export const renderText = (avCtx) => {
   let cx = avCtx.canvas.width / 2;
   let cy = avCtx.canvas.height / 2;
-  let correction = 10;
+  let correction = 0;
 
   avCtx.canvasStaticCtx.textBaseline = 'top';
   avCtx.canvasStaticCtx.fillStyle = avCtx.theme.barColor;
@@ -129,9 +129,9 @@ export const renderText = (avCtx) => {
 export const renderTime = (avCtx) => {
   const renderer = (avCtx) => {
     let time = avCtx.minutes + ':' + avCtx.seconds;
-    avCtx.canvasCtx.fillText(time, avCtx.canvas.width / 2 + 10, avCtx.canvas.height / 2 + 40);
+    avCtx.canvasCtx.fillText(time, avCtx.canvas.width / 2, avCtx.canvas.height / 2 + 40);
   }
-    
+
   renderer(avCtx);
 };
 
@@ -141,45 +141,71 @@ export const renderTime = (avCtx) => {
  * It returns a promise - for async hook
  */
 export const renderBackgroundImg = (avCtx) => {
-  const loadImage = async (src) => {
-    return new Promise((resolve, reject) => {
-      const img = new Image();
-      img.addEventListener("load", () => resolve(img));
-      img.addEventListener("error", err => reject(err));
-      img.src = src;
-    });
+  const loadImages = (srcs) => {
+    let promises = [];
+    srcs.forEach(src => {
+      promises.push(
+        new Promise((resolve, reject) => {
+          const img = new Image();
+          img.addEventListener("load", () => resolve(img));
+          img.addEventListener("error", err => reject(err));
+          img.src = src;
+        }))
+    })
+    return promises
   };
 
-  let src = "https://www.success.com/wp-content/uploads/2017/01/What-Is-Your-Dream-1024x682.jpg";
-  return loadImage(src)
-    .then(img => {
+  let srcs = [
+    //"https://www.success.com/wp-content/uploads/2017/01/What-Is-Your-Dream-1024x682.jpg",
+    "https://pngimg.com/uploads/wings/wings_PNG31.png"
+  ];
+
+  // options for each image
+  // [alpha, x, y, width, height]
+  let options = [
+    //[0.9, 0, 0, 800, 800],
+    [0.7, 0, 370, 1200, 300]
+  ]
+
+  return Promise.all(loadImages(srcs))
+    .then(imgs => {
       let cx = avCtx.canvas.width / 2;
       let cy = avCtx.canvas.height / 2;
-      let correction = 10;
-      avCtx.canvasStaticCtx.globalAlpha = 0.9;
-      avCtx.canvasStaticCtx.drawImage(img, 0, 0);
 
       avCtx.canvasStaticCtx.beginPath();
       avCtx.canvasStaticCtx.globalAlpha = 0.12;
       avCtx.canvasStaticCtx.fillStyle = "black";
-      avCtx.canvasStaticCtx.arc(cx + correction, cy, 380, 0.5 * Math.PI, 0.5 * Math.PI + 2 * Math.PI);
+      avCtx.canvasStaticCtx.arc(cx, cy, 380, 0.5 * Math.PI, 0.5 * Math.PI + 2 * Math.PI);
       avCtx.canvasStaticCtx.fill();
       avCtx.canvasStaticCtx.closePath();
 
       avCtx.canvasStaticCtx.beginPath();
       avCtx.canvasStaticCtx.globalAlpha = 0.05;
       avCtx.canvasStaticCtx.fillStyle = "red";
-      avCtx.canvasStaticCtx.arc(cx + correction, cy, 280, 0.5 * Math.PI, 0.5 * Math.PI + 2 * Math.PI);
+      avCtx.canvasStaticCtx.arc(cx, cy, 280, 0.5 * Math.PI, 0.5 * Math.PI + 2 * Math.PI);
       avCtx.canvasStaticCtx.fill();
       avCtx.canvasStaticCtx.closePath();
 
       avCtx.canvasStaticCtx.beginPath();
-      avCtx.canvasStaticCtx.globalAlpha = 0.7;
+      avCtx.canvasStaticCtx.globalAlpha = 0.8;
       avCtx.canvasStaticCtx.fillStyle = "black";
-      avCtx.canvasStaticCtx.arc(cx + correction, cy, 90, 0.5 * Math.PI, 0.5 * Math.PI + 2 * Math.PI);
+      avCtx.canvasStaticCtx.arc(cx, cy, 90, 0.5 * Math.PI, 0.5 * Math.PI + 2 * Math.PI);
       avCtx.canvasStaticCtx.fill();
       avCtx.canvasStaticCtx.closePath();
       avCtx.canvasStaticCtx.globalAlpha = 1;
+      
+      imgs.forEach((img, index) => {
+        avCtx.canvasStaticCtx.globalAlpha = options[index][0];
+        avCtx.canvasStaticCtx.drawImage(
+          img, 
+          options[index][1], 
+          options[index][2],
+          options[index][3], 
+          options[index][4],
+        );
+      })
+
+
     });
 };
 
@@ -192,7 +218,7 @@ export const renderLoading = (avCtx) => {
     avCtx.canvasCtx.clearRect(0, 0, avCtx.canvas.width, avCtx.canvas.height);
     avCtx.canvasCtx.fillText('Loading...', avCtx.canvas.width / 2 + 10, avCtx.canvas.height / 2 + 50);
   }
-  
+
   return new Promise((reslove, reject) => {
     renderer(avCtx)
     reslove();
@@ -205,7 +231,7 @@ export const renderLoading = (avCtx) => {
  */
 export const renderPlayButton = (avCtx) => {
   avCtx.canvasCtx.clearRect(0, 0, avCtx.canvas.width, avCtx.canvas.height);
-  avCtx.canvasCtx.fillText('Play', avCtx.canvas.width / 2 + 10, avCtx.canvas.height / 2 + 50);
+  avCtx.canvasCtx.fillText('Play', avCtx.canvas.width / 2, avCtx.canvas.height / 2 + 50);
 
   document.addEventListener('click', (e) => {
     if (e.target === avCtx.canvas) {
@@ -228,6 +254,7 @@ export const renderPlayButton = (avCtx) => {
  */
 export const setCanvasStyle = (avCtx) => {
   avCtx.theme.gradient = avCtx.canvasCtx.createLinearGradient(0, 0, 0, 300);
+  // avCtx.theme.gradient.addColorStop(1, avCtx.theme.barColor);
   avCtx.theme.gradient.addColorStop(1, avCtx.theme.barColor);
   avCtx.canvasCtx.fillStyle = avCtx.theme.gradient;
   avCtx.canvasCtx.font = avCtx.theme.font.join(' ');
