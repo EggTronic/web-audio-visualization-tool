@@ -12,6 +12,7 @@ export default class AudioVisualizer {
     this.onEndHook = cfg.onEndHook || [];
 
     this.isPlaying = false;
+    this.isLoading = false;
     this.autoplay = cfg.autoplay || false;
     this.loop = cfg.loop || false;
     this.audio = document.getElementById(cfg.audio) || {};
@@ -155,6 +156,7 @@ export default class AudioVisualizer {
    * Execute hooks before playing sound
    */
   loadSound = () => {
+    this.isLoading = true;
     setTimeout(
       function(){
         this._executeHook(this.onLoadAudioHook);
@@ -170,6 +172,7 @@ export default class AudioVisualizer {
    * @param  {Object} buffer
    */
   playSound = (buffer) => {
+    this.loading = false;
     this.isPlaying = true;
     if (this.audio.pause) {
       this.audio.play();
