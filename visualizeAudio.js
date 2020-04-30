@@ -47,8 +47,7 @@ export default class AudioVisualizer {
   }
 
   init = () => {
-    this._executeAsyncHook(this.beforeInitHook).then(
-      function () {
+    this._executeAsyncHook(this.beforeInitHook).then(() => {
         this._setContext();
         this._setAnalyser();
         this._setFrequencyData();
@@ -62,7 +61,7 @@ export default class AudioVisualizer {
           this.loadSound();
         }
         this._executeHook(this.afterInitHook);
-      }.bind(this)
+      }
     );
   }
 
@@ -164,12 +163,11 @@ export default class AudioVisualizer {
    * Execute hooks before playing sound
    */
   loadSound = () => {
-    this._executeAsyncHook(this.beforeLoadAudioHook).then(
-      function() {
+    this._executeAsyncHook(this.beforeLoadAudioHook).then(() => {
         this.isLoading = true;
-        this.playSound.bind(this);
+        this.playSound;
         this._executeHook(this.afterLoadAudioHook);
-      }.bind(this)
+      }
     )
   };
 
@@ -181,18 +179,16 @@ export default class AudioVisualizer {
    */
   playSound = (buffer) => {
     if (this.audio.pause) {
-      this._executeAsyncHook(this.beforeResumeHook).then(
-        function(){
+      this._executeAsyncHook(this.beforeResumeHook).then(() => {
           this.loading = false;
           this.isPlaying = true;
           this.audio.play();
           this._renderFrame();
           this._executeHook(this.afterResumeHook);
-        }.bind(this)
+        }
       );
     } else {
-      this._executeAsyncHook(this.beforeStartHook).then(
-        function(){
+      this._executeAsyncHook(this.beforeStartHook).then(() => {
           this.loading = false;
           this.isPlaying = true;
           this.sourceNode.disconnect();
@@ -203,7 +199,7 @@ export default class AudioVisualizer {
           this._startTimer();
           this._renderFrame();
           this._executeHook(this.afterStartHook);
-        }.bind(this)
+        }
       );
     }
   };
@@ -213,12 +209,11 @@ export default class AudioVisualizer {
    * Pause current sound.
    */
   pauseSound = () => {
-    this._executeAsyncHook(this.beforePauseHook).then(
-      function() {
+    this._executeAsyncHook(this.beforePauseHook).then(() => {
         this.audio.pause();
         this.isPlaying = false;
         this._executeHook(this.afterPauseHook);
-      }.bind(this)
+      }
     );
   };
 
@@ -250,12 +245,12 @@ export default class AudioVisualizer {
       // check if there is a specified fps
       if (this.framesPerSecond) {
         // use setTimeout to simulate certain fps rate
-        setTimeout(function () {
-          requestAnimationFrame(this._renderFrame.bind(this));
-        }.bind(this), 1000 / this.framesPerSecond);
+        setTimeout(() => {
+          requestAnimationFrame(this._renderFrame);
+        }, 1000 / this.framesPerSecond);
       } else {
         // render at default fps (depends on device)
-        requestAnimationFrame(this._renderFrame.bind(this));
+        requestAnimationFrame(this._renderFrame);
       }
     }
 
@@ -292,9 +287,9 @@ export default class AudioVisualizer {
    */
   _renderStatic = () => {
     this._executePromiseAllHook(this.beforeStaticHook)
-      .then(function () {
+      .then(() => {
         this._executeHook(this.onStaticHook)
-      }.bind(this))
+      })
       .catch(err => {
         this.onError(err);
       });
