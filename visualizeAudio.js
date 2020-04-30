@@ -1,11 +1,11 @@
 export default class AudioVisualizer {
   constructor(cfg) {
     this.onInitHook = cfg.onInitHook || [],
-    this.onLoadAudioHook = cfg.onLoadAudioHook || [],
-    this.onStartHook = cfg.onStartHook || [],
-    this.onPauseHook = cfg.onPauseHook || [],
-    this.onResumeHook = cfg.onResumeHook || [],
-    this.onFrameHook = cfg.onFrameHook || [];
+      this.onLoadAudioHook = cfg.onLoadAudioHook || [],
+      this.onStartHook = cfg.onStartHook || [],
+      this.onPauseHook = cfg.onPauseHook || [],
+      this.onResumeHook = cfg.onResumeHook || [],
+      this.onFrameHook = cfg.onFrameHook || [];
     this.onAsyncStaticHook = cfg.onAsyncStaticHook || [];
     this.onStaticHook = cfg.onStaticHook || [];
     this.onEventHook = cfg.onEventHook || [];
@@ -24,12 +24,11 @@ export default class AudioVisualizer {
     this.ctx = null;
     this.analyser = null;
     this.fftSize = cfg.fftSize || 512;
+    this.framesPerSecond = cfg.framesPerSecond || 30;
     this.sourceNode = null;
     this.frequencyData = [];
-    this.audioSrc = null;
-    this.duration = 0;
-    this.minutes = '00';
-    this.seconds = '00';
+    this.minutes = "00";
+    this.seconds = "00";
     this.barWidth = cfg.barWidth || 2;
     this.barHeight = cfg.barHeight || 2;
     this.barSpacing = cfg.barSpacing || 5;
@@ -56,7 +55,6 @@ export default class AudioVisualizer {
     if (this.autoplay) {
       this.loadSound();
     }
-    this.canvasCtx.fillText('Play', this.canvas.width / 2 + 10, this.canvas.height / 2 + 50);
   }
 
   /**
@@ -99,23 +97,11 @@ export default class AudioVisualizer {
    *
    */
   _setBufferSourceNode = () => {
-    this.sourceNode = this.ctx.createBufferSource();
-    this.sourceNode.loop = this.loop;
+    this.audio.loop = this.loop;
+
+    this.sourceNode = this.ctx.createMediaElementSource(this.audio);
     this.sourceNode.connect(this.analyser);
     this.sourceNode.connect(this.ctx.destination);
-    this.sourceNode.onended = function () {
-      setTimeout(
-        function () {
-          console.log(this)
-          clearInterval(this.interval);
-          //this.sourceNode.disconnect();
-          this.isPlaying = false;
-          //this.setBufferSourceNode();
-        }.bind(this)
-        , 1500)
-
-        this._executeHook(this.onEndHook);
-    }.bind(this);
   };
 
   /**
@@ -136,8 +122,6 @@ export default class AudioVisualizer {
     this.gradient = this.canvasCtx.createLinearGradient(0, 0, 0, 300);
     this.gradient.addColorStop(1, this.barColor);
     this.canvasCtx.fillStyle = this.gradient;
-    // this.canvasCtx.shadowBlur = this.shadowBlur;
-    // this.canvasCtx.shadowColor = this.shadowColor;
     this.canvasCtx.font = this.font.join(' ');
     this.canvasCtx.textAlign = 'center';
   };
@@ -159,38 +143,20 @@ export default class AudioVisualizer {
 
   /**
    * @description
-   * Bind click events.
+   * Bind events.
    *
    */
   _bindEvents = () => {
-    document.addEventListener('click', (e) => {
-      if (e.target === this.canvas) {
-        e.stopPropagation();
-        if (!this.isPlaying) {
-          return (this.ctx.state === "suspended") ? this.playSound() : this.loadSound();
-        } else {
-          return this.pauseSound();
-        }
-      }
-    }); 
-
     this._executeHook(this.onEventHook);
   };
 
   /**
    * @description
-   * Load sound file.
+   * Execute hooks before playing sound
    */
   loadSound = () => {
-    let req = new XMLHttpRequest();
-    req.open('GET', this.audioSrc, true);
-    req.responseType = 'arraybuffer';
-    req.onload = function () {
-      this.ctx.decodeAudioData(req.response, this.playSound.bind(this), this._onError.bind(this));
-    }.bind(this);
-    req.send();
-
     this._executeHook(this.onLoadAudioHook);
+    this.playSound.bind(this);
   };
 
   /**
@@ -201,8 +167,8 @@ export default class AudioVisualizer {
    */
   playSound = (buffer) => {
     this.isPlaying = true;
-    if (this.ctx.state === 'suspended') {
-      this.ctx.resume();
+    if (this.audio.pause) {
+      this.audio.play();
       this._renderFrame();
       this._executeHook(this.onResumeHook);
     } else {
@@ -222,36 +188,9 @@ export default class AudioVisualizer {
    * Pause current sound.
    */
   pauseSound = () => {
-    this.ctx.suspend();
+    this.audio.pause();
     this.isPlaying = false;
-  };
-
-  /**
-   * @description
-   * Start playing timer.
-   */
-  _startTimer = () => {
-    this.interval = setInterval(() => {
-      if (this.isPlaying && this.ctx.state === "running") {
-        let now = new Date(this.duration);
-        let min = now.getHours();
-        let sec = now.getMinutes();
-        this.minutes = (min < 10) ? '0' + min : min;
-        this.seconds = (sec < 10) ? '0' + sec : sec;
-        this.duration = now.setMinutes(sec + 1);
-      }
-    }, 1000);
-  };
-
-  /**
-   * @description
-   * Reset time counter.
-   */
-  _resetTimer = () => {
-    let time = new Date(0, 0);
-    this.duration = time.getTime();
-    this.minutes = '00';
-    this.seconds = '00';
+    this._executeHook(this.onPauseHook);
   };
 
   /**
@@ -270,9 +209,12 @@ export default class AudioVisualizer {
    */
   _renderFrame = () => {
     if (this.isPlaying) {
-      requestAnimationFrame(this._renderFrame.bind(this));
+      setTimeout(function () {
+        requestAnimationFrame(this._renderFrame.bind(this));
+      }.bind(this), 1000 / this.framesPerSecond);
     }
 
+    this._updateTime();
     this.analyser.getByteFrequencyData(this.frequencyData);
     this.canvasCtx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
@@ -281,11 +223,31 @@ export default class AudioVisualizer {
 
   /**
    * @description
+   * Update time.
+   * Format -> mm:ss
+   */
+  _updateTime = () => {
+    // check if audio is ended
+    if (this.audio.ended) {
+      this.isPlaying = false;
+    }
+
+    // update time
+    let flooredTime = Math.floor(this.audio.currentTime);
+    let minutes = Math.floor(flooredTime / 60);
+    let seconds = flooredTime % 60;
+
+    this.minutes = minutes < 10 ? "0" + minutes : minutes;
+    this.seconds = seconds < 10 ? "0" + seconds : seconds;
+  }
+
+  /**
+   * @description
    * Render frame on canvas.
    */
   _renderStatic = () => {
     this._executeAsyncHook(this.onAsyncStaticHook)
-      .then(function() {
+      .then(function () {
         this._executeHook(this.onStaticHook)
       }.bind(this))
       .catch(err => {

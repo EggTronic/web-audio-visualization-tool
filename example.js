@@ -6,14 +6,15 @@ import {
   renderText,
   renderTime,
   renderLoading,
-  renderBackgroundImg
+  renderBackgroundImg,
+  renderPlayButton
 } from './defaultRenderHooks.js';
 
 window.addEventListener('DOMContentLoaded', () => {
   'use strict';
   let audioVisualizer = new AudioVisualizer({
     autoplay: false,
-    loop: false,
+    loop: true,
     audio: 'myAudio',
     canvas: 'myCanvas',
     canvasStatic: 'myStaticCanvas',
@@ -22,11 +23,12 @@ window.addEventListener('DOMContentLoaded', () => {
     barSpacing: 7,
     barColor: '#cafdff',
     shadowBlur: 20, // only of static canvas for performance issue
-    shadowColor: '#ffffff',
+    shadowColor: '#ffffff', // only of static canvas for performance issue
     font: ['12px', 'Helvetica'],
     fftSize: 512,
+    framesPerSecond: 30, // the refresh rate for rendering canvas (not static canvas)
 
-    onInitHook: [],
+    onInitHook: [renderPlayButton],
     onLoadAudioHook: [renderLoading],
     onStartHook: [],
     onPauseHook: [],

@@ -56,22 +56,16 @@ export const renderProgressbar = (avCtx) => {
   let cx = avCtx.canvas.width / 2;
   let cy = avCtx.canvas.height / 2;
   let correction = 10;
-  let curDuration = avCtx.minutes * 60 + parseInt(avCtx.seconds);
-
+  
   let arcPercent;
   avCtx.canvasCtx.strokeStyle = avCtx.barColor;
   avCtx.canvasCtx.lineWidth = '10';
 
-  if (avCtx.sourceNode.buffer) {
-    arcPercent = curDuration / avCtx.sourceNode.buffer.duration;
-    if (arcPercent > 1) {
-      arcPercent = 1;
-    }
-    avCtx.canvasCtx.beginPath();
-    avCtx.canvasCtx.arc(cx + correction, cy, 100, 0.5 * Math.PI, 0.5 * Math.PI + arcPercent * 2 * Math.PI);
-    avCtx.canvasCtx.stroke();
-    avCtx.canvasCtx.closePath();
-  }
+  arcPercent = avCtx.audio.currentTime / avCtx.audio.duration;
+  avCtx.canvasCtx.beginPath();
+  avCtx.canvasCtx.arc(cx + correction, cy, 100, 0.5 * Math.PI, 0.5 * Math.PI + arcPercent * 2 * Math.PI);
+  avCtx.canvasCtx.stroke();
+  avCtx.canvasCtx.closePath();
 };
 
 /**
@@ -132,3 +126,24 @@ export const renderLoading = (avCtx) => {
   avCtx.canvasCtx.clearRect(0, 0, avCtx.canvas.width, avCtx.canvas.height);
   avCtx.canvasCtx.fillText('Loading...', avCtx.canvas.width / 2 + 10, avCtx.canvas.height / 2 + 50);
 }
+
+/**
+ * @description
+ * Render loading.
+ */
+export const renderPlayButton = (avCtx) => {
+  avCtx.canvasCtx.clearRect(0, 0, avCtx.canvas.width, avCtx.canvas.height);
+  avCtx.canvasCtx.fillText('Play', avCtx.canvas.width / 2 + 10, avCtx.canvas.height / 2 + 50);
+
+  document.addEventListener('click', (e) => {
+    if (e.target === avCtx.canvas) {
+      e.stopPropagation();
+      if (!avCtx.isPlaying) {
+        return (avCtx.audio.paused) ? avCtx.playSound() : avCtx.loadSound();
+      } else {
+        return avCtx.pauseSound();
+      }
+    }
+  }); 
+}
+
