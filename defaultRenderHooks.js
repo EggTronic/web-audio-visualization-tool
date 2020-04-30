@@ -38,7 +38,7 @@ export const renderLounge = (avCtx) => {
           renderer(i, avCtx);
           avCtx._executeHook(avCtx.onPauseHook);
         }
-      , i)
+      , i*5)
     }
   } else {
     setTimeout(
