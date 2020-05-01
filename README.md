@@ -35,7 +35,7 @@
     <script type="module" src='example.js'></script>
 ```
 
-> 2. Create an example.js file as the example above (you can also use your own name) and copy the js code below into it. 
+> 2. Create an example.js file and copy the js code below into it. (you can also use your own name)
 > 3. You will need to reference 2 canvas element id and  1 audio element id to init the AudioVisualizer.
 > 4. (optional) You can reference your own canvases.
 > 5. You can reuse my example style for a better preview (it's in the index.html)
