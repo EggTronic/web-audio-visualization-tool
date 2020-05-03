@@ -58,10 +58,8 @@ export default class AudioVisualizer {
         this._setMediaSource();
         this._bindEvents();
         this._renderStatic();
-        if (this.autoplay) {
-          this.loadSound();
-        }
         this._executeHook(this.afterInitHook);
+        this.loadSound();
       }
     );
   }
@@ -136,10 +134,13 @@ export default class AudioVisualizer {
    * Execute hooks before playing sound
    */
   loadSound = () => {
+    this.isLoading = true;
     this._executeAsyncHook(this.beforeLoadAudioHook).then(() => {
-        this.isLoading = true;
-        this.playSound;
+        this.isLoading = false;
         this._executeHook(this.afterLoadAudioHook);
+        if (this.autoplay) {
+          this.playSound();
+        }
       }
     )
   };
@@ -153,7 +154,7 @@ export default class AudioVisualizer {
   playSound = (buffer) => {
     if (this.audio.pause) {
       this._executeAsyncHook(this.beforeResumeHook).then(() => {
-          this.loading = false;
+          this.isLoading = false;
           this.isPlaying = true;
           this.audio.play();
           this._renderFrame();
@@ -166,8 +167,8 @@ export default class AudioVisualizer {
           this.isPlaying = true;
           this.sourceNode.disconnect();
           this._setBufferSourceNode();
-          this.sourceNode.buffer = buffer;
-          this.sourceNode.start(0);
+          // this.sourceNode.buffer = buffer;
+          // this.sourceNode.start(0);
           this._resetTimer();
           this._startTimer();
           this._renderFrame();

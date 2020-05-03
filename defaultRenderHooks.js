@@ -56,8 +56,8 @@ export const renderLounge = (avCtx) => {
  * Render the shadow of progressbar.
  */
 export const renderProgressbarShadow = (avCtx) => {
-  let cx = avCtx.canvas.width / 2;
-  let cy = avCtx.canvas.height / 2;
+  let cx = avCtx.canvasStatic.width / 2;
+  let cy = avCtx.canvasStatic.height / 2;
   let correction = 0;
 
   avCtx.canvasStaticCtx.strokeStyle = avCtx.theme.barColor;
@@ -103,6 +103,82 @@ export const renderProgressbar = (avCtx) => {
 
   renderer(avCtx);
 };
+
+/**
+ * @description
+ * Render the shadow of seek bar.
+ */
+export const renderSeekBarShadow = (avCtx) => {
+  let width = 400
+  let height = 20
+
+  let cxStart = avCtx.canvasStatic.width / 2 - width / 2;
+  let cyStart = 3 * avCtx.canvasStatic.height / 4 + 100;
+
+  avCtx.canvasStaticCtx.beginPath();
+  avCtx.canvasStaticCtx.globalAlpha = 0.1;
+  avCtx.canvasStaticCtx.fillRect(cxStart, cyStart, width, height);
+  avCtx.canvasStaticCtx.stroke();
+  avCtx.canvasStaticCtx.closePath();
+  avCtx.canvasStaticCtx.globalAlpha = 1;
+}
+
+/**
+ * @description
+ * Render seek bar.
+ */
+export const renderSeekBar = (avCtx) => {
+  let width = 400
+  let height = 20
+  let btnWidth = 5
+  let btnHeight = 4
+
+  let cxStart = avCtx.canvas.width / 2 - width / 2;
+  let cyStart = 3 * avCtx.canvas.height / 4 + 100;
+
+  avCtx.canvasCtx.beginPath();
+  avCtx.canvasCtx.fillRect(cxStart, cyStart, width * avCtx.audio.currentTime / avCtx.audio.duration, height);
+  avCtx.canvasCtx.stroke();
+  avCtx.canvasCtx.closePath();
+
+  avCtx.canvasCtx.beginPath();
+  avCtx.canvasCtx.globalAlpha = 0.3;
+  avCtx.canvasCtx.fillStyle = "black"
+  avCtx.canvasCtx.fillRect(cxStart + width * avCtx.audio.currentTime / avCtx.audio.duration, cyStart - btnHeight / 2, btnWidth, height + btnHeight);
+  avCtx.canvasCtx.stroke();
+  avCtx.canvasCtx.fillStyle = avCtx.theme.barColor
+  avCtx.canvasCtx.globalAlpha = 1;
+  avCtx.canvasCtx.closePath();
+}
+
+/**
+ * @description
+ * bind tseek bar event to mouse.
+ */
+export const bindSeekBarEvent = (avCtx) => {
+  avCtx.canvas.addEventListener('click', (e) => {
+      let width = 400
+      let height = 20
+
+      let cxStart = avCtx.canvasStatic.width / 2 - width / 2;
+      let cyStart = 3 * avCtx.canvasStatic.height / 4 + 100;
+
+      let barBox = new Path2D();
+      barBox.rect(cxStart, cyStart, width, height)
+
+      if (avCtx.canvasCtx.isPointInPath(barBox, e.offsetX, e.offsetY)) {
+        e.stopPropagation();
+        avCtx.audio.currentTime = avCtx.audio.duration * ((e.offsetX - cxStart) / width);
+        if (!avCtx.isPlaying) {
+          if (avCtx.isLoading) {
+            return;
+          }
+          avCtx.playSound();
+        }
+      }
+  });
+}
+
 
 /**
  * @description
@@ -193,19 +269,17 @@ export const renderBackgroundImg = (avCtx) => {
       avCtx.canvasStaticCtx.fill();
       avCtx.canvasStaticCtx.closePath();
       avCtx.canvasStaticCtx.globalAlpha = 1;
-      
+
       imgs.forEach((img, index) => {
         avCtx.canvasStaticCtx.globalAlpha = options[index][0];
         avCtx.canvasStaticCtx.drawImage(
-          img, 
-          options[index][1], 
+          img,
+          options[index][1],
           options[index][2],
-          options[index][3], 
+          options[index][3],
           options[index][4],
         );
       })
-
-
     });
 };
 
@@ -216,36 +290,58 @@ export const renderBackgroundImg = (avCtx) => {
 export const renderLoading = (avCtx) => {
   const renderer = (avCtx) => {
     avCtx.canvasCtx.clearRect(0, 0, avCtx.canvas.width, avCtx.canvas.height);
-    avCtx.canvasCtx.fillText('Loading...', avCtx.canvas.width / 2 + 10, avCtx.canvas.height / 2 + 50);
+    avCtx.canvasCtx.fillText('Loading...', avCtx.canvas.width / 2 + 5, avCtx.canvas.height / 2 + 50);
   }
 
   return new Promise((reslove, reject) => {
-    renderer(avCtx)
-    reslove();
+    renderer(avCtx);
+    let interval = setInterval(function () {
+      if (avCtx.audio.buffered.end(0) > 0) {
+        clearInterval(interval)
+        reslove();
+      }
+    }, 200);
+
   })
+}
+
+export const clearLoading = (avCtx) => {
+  avCtx.canvasCtx.clearRect(0, 0, avCtx.canvas.width, avCtx.canvas.height);
 }
 
 /**
  * @description
- * Render loading.
+ * Render Play.
  */
 export const renderPlayButton = (avCtx) => {
-  avCtx.canvasCtx.clearRect(0, 0, avCtx.canvas.width, avCtx.canvas.height);
-  avCtx.canvasCtx.fillText('Play', avCtx.canvas.width / 2, avCtx.canvas.height / 2 + 50);
+  let text = avCtx.isPlaying ? "Pause" : avCtx.isLoading ? "Loading" : "Play";
+  avCtx.canvasCtx.clearRect(avCtx.canvas.width / 2 - 20, avCtx.canvas.height / 2 + 60, 40, 20);
+  avCtx.canvasCtx.fillText(text, avCtx.canvas.width / 2, avCtx.canvas.height / 2 + 60);
+}
 
-  document.addEventListener('click', (e) => {
-    if (e.target === avCtx.canvas) {
-      e.stopPropagation();
-      if (!avCtx.isPlaying) {
-        if (avCtx.isLoading) {
-          return;
+/**
+ * @description
+ * Bind Play Event.
+ */
+export const bindPlayEvent = (avCtx) => {
+  avCtx.canvas.onclick = (e) => {
+      let cx = avCtx.canvas.width / 2;
+      let cy = avCtx.canvas.height / 2;
+      const arcBox = new Path2D();
+
+      arcBox.arc(cx, cy, 90, 0.5 * Math.PI, 0.5 * Math.PI + 2 * Math.PI);
+      if (avCtx.canvasCtx.isPointInPath(arcBox, e.offsetX, e.offsetY)) {
+        e.stopPropagation();
+        if (!avCtx.isPlaying) {
+          if (avCtx.isLoading) {
+            return;
+          }
+          avCtx.audio.paused ? avCtx.playSound() : avCtx.loadSound();
+        } else {
+          avCtx.pauseSound();
         }
-        return (avCtx.audio.paused) ? avCtx.playSound() : avCtx.loadSound();
-      } else {
-        return avCtx.pauseSound();
       }
     }
-  });
 }
 
 /**

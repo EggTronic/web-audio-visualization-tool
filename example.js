@@ -3,12 +3,17 @@ import {
   renderLounge,
   renderProgressbar,
   renderProgressbarShadow,
+  renderSeekBarShadow,
+  renderSeekBar,
   renderText,
   renderTime,
   renderLoading,
   renderBackgroundImg,
   renderPlayButton,
+  bindPlayEvent,
+  bindSeekBarEvent,
   setCanvasStyle,
+  clearLoading,
   setStaticCanvasStyle
 } from './defaultRenderHooks.js';
 
@@ -39,30 +44,30 @@ window.addEventListener('DOMContentLoaded', () => {
     // hooks contain callbacks just before/after differency lifecycle stage
     // cb in before hooks should return promises
     beforeInitHook: [], 
-    afterInitHook: [setCanvasStyle, setStaticCanvasStyle, renderPlayButton],
+    afterInitHook: [setCanvasStyle, setStaticCanvasStyle],
 
     beforeLoadAudioHook: [renderLoading],
-    afterLoadAudioHook: [],
+    afterLoadAudioHook: [clearLoading, renderPlayButton],
 
     beforeStartHook: [],
     afterStartHook: [],
 
     beforePauseHook: [],
-    afterPauseHook: [renderProgressbar, renderTime],
+    afterPauseHook: [renderProgressbar, renderTime, renderSeekBar, renderPlayButton],
 
     beforeResumeHook: [],
     afterResumeHook: [],
 
     // hook for static canvas
     beforeStaticHook: [renderBackgroundImg],
-    onStaticHook: [renderProgressbarShadow, renderText],
+    onStaticHook: [renderProgressbarShadow, renderText, renderSeekBarShadow],
 
     // hooks that will be excuted for each frame
     // used for the main canvas
-    onFrameHook: [renderLounge, renderProgressbar, renderTime],
+    onFrameHook: [renderLounge, renderProgressbar, renderTime, renderSeekBar],
 
     // you may bind your events here
-    onEventHook: [],
+    onEventHook: [bindPlayEvent, bindSeekBarEvent],
 
     // you may release some resourse here 
     // if loop is ture this hook will not be excuted
