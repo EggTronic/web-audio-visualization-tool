@@ -23,7 +23,7 @@ window.addEventListener('DOMContentLoaded', () => {
     autoplay: false,
     loop: true,
     fftSize: 512, // the frequency sample size for audio analyzer
-    // framesPerSecond: 60, // the refresh rate for rendering canvas (not static canvas)
+    framesPerSecond: 60, // the refresh rate for rendering canvas (not static canvas)
 
     audio: 'myAudio',
     canvas: 'myCanvas', // main canvas for rendering frames
