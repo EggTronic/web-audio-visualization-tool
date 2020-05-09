@@ -1,1 +1,9 @@
-class CanvasElement {}
+class CanvasElement {
+    constructor(props) {
+        super(props)
+    }
+
+    render(avCtx){
+
+    }
+}
