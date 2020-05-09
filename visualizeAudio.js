@@ -193,6 +193,43 @@ export default class AudioVisualizer {
 
   /**
    * @description
+   * Get volume.
+   */
+  getVolume = () => {
+    return this.audio.volume;
+  };
+
+
+  /**
+   * @description
+   * Set volume.
+   */
+  setVolume = (volume) => {
+    this.audio.volume = 0 <= volume <=1 ? volume : this.audio.volume;
+  };
+
+  /**
+   * @description
+   * Increase volume.
+   */
+  increaseVolume = () => {
+    if (this.audio.volume < 1) {
+      this.setVolume(this.audio.volume + 0.1)
+    }
+  };
+
+  /**
+   * @description
+   * Decrease volume.
+   */
+  decreaseVolume = () => {
+    if (this.audio.volume > 1) {
+      this.setVolume(this.audio.volume - 0.1)
+    }
+  };
+
+  /**
+   * @description
    * On audio data stream error fn.
    *
    * @param  {Object} e
