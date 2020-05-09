@@ -205,16 +205,20 @@ export default class AudioVisualizer {
    * Set volume.
    */
   setVolume = (volume) => {
-    this.audio.volume = 0 <= volume <=1 ? volume : this.audio.volume;
-  };
+    if(0 <= volume <= 1){
+      this.audio.volume = volume;
+    } else {
+      this.audio.volume = volume < 0 ? 0 : 1
+    }
+  }
 
   /**
    * @description
    * Increase volume.
    */
-  increaseVolume = () => {
+  increaseVolume = (step) => {
     if (this.audio.volume < 1) {
-      this.setVolume(this.audio.volume + 0.1)
+      this.setVolume(this.audio.volume + step)
     }
   };
 
@@ -222,9 +226,9 @@ export default class AudioVisualizer {
    * @description
    * Decrease volume.
    */
-  decreaseVolume = () => {
+  decreaseVolume = (step) => {
     if (this.audio.volume > 1) {
-      this.setVolume(this.audio.volume - 0.1)
+      this.setVolume(this.audio.volume - step)
     }
   };
 
