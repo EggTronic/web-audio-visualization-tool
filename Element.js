@@ -15,12 +15,16 @@ class Element {
         // iterate events to bind
         // return functions to un-subscribe events
     }
+
+    render(){
+        
+    }
 }
 
-export class CanvasElement extends Element {
-    constructor(x, y, type, theme, audio, frequencyData, onClick, onKeys, canvas) {
+export class Canvas2DElement extends Element {
+    constructor(x, y, type, theme, audio, frequencyData, onClick, onKeys, canvas2D) {
         super(x, y, type, theme, audio, frequencyData, onClick, onKeys);
-        this.canvas = canvas;
+        this.canvas2D = canvas2D;
     }
 
     render(){
@@ -28,12 +32,10 @@ export class CanvasElement extends Element {
     }
 }
 
-export class ThreeElement extends Element {
-    constructor(x, y, type, others) {
-        super(x, y, type, others);
-    }
 
-    render(canvas, audio, frequencyData){
-        
+export class ThreeElement extends Element {
+    constructor(x, y, type, theme, audio, frequencyData, onClick, onKeys, three) {
+        super(x, y, type, theme, audio, frequencyData, onClick, onKeys);
+        this.three = three;
     }
 }
