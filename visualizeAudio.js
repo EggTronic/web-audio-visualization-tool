@@ -271,6 +271,7 @@ export default class AudioVisualizer {
 
     this._updateTime();
     this.analyser.getByteFrequencyData(this.frequencyData);
+    console.log(this.frequencyData)
     
     this._executeHook(this.onFrameHook);
   };
