@@ -16,7 +16,8 @@ import {
   renderSeekBarShadow,
   bindSeekBarEvent,
   renderPlayControl,
-  bindPlayControlEvent
+  bindPlayControlEvent,
+  renderVolumeControl
 } from './defaultRenderHooks/index.js';
 
 window.addEventListener('DOMContentLoaded', () => {
@@ -49,7 +50,7 @@ window.addEventListener('DOMContentLoaded', () => {
     afterInitHook: [setCanvasStyle, setStaticCanvasStyle],
 
     beforeLoadAudioHook: [renderLoading],
-    afterLoadAudioHook: [clearLoading, renderPlayControl],
+    afterLoadAudioHook: [clearLoading, renderVolumeControl, renderPlayControl],
 
     beforeStartHook: [],
     afterStartHook: [],
