@@ -1,21 +1,23 @@
 import AudioVisualizer from './visualizeAudio.js';
 import {
+  setCanvasStyle, 
+  setStaticCanvasStyle
+} from './defaultInitHooks/index.js';
+import {
+  renderTime,
+  renderInfo,
+  renderLoading,
+  clearLoading,
+  renderBackgroundImg,
   renderLounge,
   renderProgressbar,
   renderProgressbarShadow,
-  renderSeekBarShadow,
   renderSeekBar,
-  renderText,
-  renderTime,
-  renderLoading,
-  renderBackgroundImg,
-  renderPlayButton,
-  bindPlayEvent,
+  renderSeekBarShadow,
   bindSeekBarEvent,
-  setCanvasStyle,
-  clearLoading,
-  setStaticCanvasStyle
-} from './defaultRenderHooks.js';
+  renderPlayControl,
+  bindPlayControlEvent
+} from './defaultRenderHooks/index.js';
 
 window.addEventListener('DOMContentLoaded', () => {
   'use strict';
@@ -40,34 +42,34 @@ window.addEventListener('DOMContentLoaded', () => {
       shadowColor: '#ffffff',
       font: ['12px', 'Helvetica'],
     },
-    
+
     // hooks contain callbacks just before/after differency lifecycle stage
     // cb in before hooks should return promises
-    beforeInitHook: [], 
+    beforeInitHook: [],
     afterInitHook: [setCanvasStyle, setStaticCanvasStyle],
 
     beforeLoadAudioHook: [renderLoading],
-    afterLoadAudioHook: [clearLoading, renderPlayButton],
+    afterLoadAudioHook: [clearLoading, renderPlayControl],
 
     beforeStartHook: [],
     afterStartHook: [],
 
     beforePauseHook: [],
-    afterPauseHook: [renderProgressbar, renderTime, renderSeekBar, renderPlayButton],
+    afterPauseHook: [renderProgressbar, renderTime, renderSeekBar, renderPlayControl],
 
     beforeResumeHook: [],
     afterResumeHook: [],
 
     // hook for static canvas
     beforeStaticHook: [renderBackgroundImg],
-    onStaticHook: [renderProgressbarShadow, renderText, renderSeekBarShadow],
+    onStaticHook: [renderProgressbarShadow, renderInfo, renderSeekBarShadow],
 
     // hooks that will be excuted for each frame
     // used for the main canvas
     onFrameHook: [renderLounge, renderProgressbar, renderTime, renderSeekBar],
 
     // you may bind your events here
-    onEventHook: [bindPlayEvent, bindSeekBarEvent],
+    onEventHook: [bindPlayControlEvent, bindSeekBarEvent],
 
     // you may release some resourse here 
     // if loop is ture this hook will not be excuted

@@ -269,9 +269,9 @@ export default class AudioVisualizer {
       }
     }
 
+    this.canvasCtx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this._updateTime();
     this.analyser.getByteFrequencyData(this.frequencyData);
-    console.log(this.frequencyData)
     
     this._executeHook(this.onFrameHook);
   };
