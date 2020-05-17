@@ -103,6 +103,9 @@ window.addEventListener('DOMContentLoaded', () => {
     beforeResumeHook: [],
     afterResumeHook: [],
 
+    // you can react to volume change here
+    onVolumeChangeHook: [],
+
     // hook for static canvas
     beforeStaticHook: [renderBackgroundImg],
     onStaticHook: [renderProgressbarShadow, renderInfo, renderSeekBarShadow],

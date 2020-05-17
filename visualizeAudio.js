@@ -15,6 +15,7 @@ export default class AudioVisualizer {
     this.onStaticHook = cfg.onStaticHook || [];
     this.onEventHook = cfg.onEventHook || [];
     this.onEndHook = cfg.onEndHook || [];
+    this.onVolumeChangeHook = cfg.onVolumeChangeHook || [];
 
     this.isPlaying = false;
     this.isLoading = false;
@@ -199,7 +200,6 @@ export default class AudioVisualizer {
     return this.audio.volume;
   };
 
-
   /**
    * @description
    * Set volume.
@@ -210,6 +210,7 @@ export default class AudioVisualizer {
     } else {
       this.audio.volume = volume < 0 ? 0 : 1
     }
+    this._executeHook(this.onVolumeChangeHook);
   }
 
   /**

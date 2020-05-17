@@ -60,6 +60,9 @@ window.addEventListener('DOMContentLoaded', () => {
     beforeResumeHook: [],
     afterResumeHook: [],
 
+    // you can react to volume change here
+    onVolumeChangeHook: [],
+
     // hook for static canvas
     beforeStaticHook: [renderBackgroundImg],
     onStaticHook: [renderProgressbarShadow, renderInfo, renderSeekBarShadow],
@@ -73,7 +76,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // you may release some resourse here 
     // if loop is ture this hook will not be excuted
-    onEndHook: []
+    onEndHook: [],
   })
   audioVisualizer.init();
 }, false);
