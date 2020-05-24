@@ -13,12 +13,13 @@ export const renderPlayControl = (avCtx) => {
  * Bind Play Event.
  */
 export const bindPlayControlEvent = (avCtx) => {
-  avCtx.canvas.onclick = (e) => {
-    let cx = avCtx.canvas.width / 2;
-    let cy = avCtx.canvas.height / 2;
-    const arcBox = new Path2D();
+  let cx = avCtx.canvas.width / 2;
+  let cy = avCtx.canvas.height / 2;
+  const arcBox = new Path2D();
 
-    arcBox.arc(cx, cy, 90, 0.5 * Math.PI, 0.5 * Math.PI + 2 * Math.PI);
+  arcBox.arc(cx, cy, 90, 0.5 * Math.PI, 0.5 * Math.PI + 2 * Math.PI);
+
+  avCtx.canvas.onclick = (e) => {
     if (avCtx.canvasCtx.isPointInPath(arcBox, e.offsetX, e.offsetY)) {
       e.stopPropagation();
       if (!avCtx.isPlaying) {
@@ -31,4 +32,19 @@ export const bindPlayControlEvent = (avCtx) => {
       }
     }
   }
+
+  let t = null;
+  avCtx.canvas.addEventListener('mousemove', (e) => {
+    if (t === null) {
+      t = setTimeout(() => {
+        if (avCtx.canvasCtx.isPointInPath(arcBox, e.offsetX, e.offsetY)) {
+          e.stopPropagation();
+          avCtx.canvas.style.cursor = "pointer";
+        } else {
+          avCtx.canvas.style.cursor = "";
+        }
+        t = null;
+      }, 16);
+    }
+  });
 }

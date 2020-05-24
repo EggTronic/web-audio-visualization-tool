@@ -140,6 +140,7 @@ window.addEventListener('DOMContentLoaded', () => {
 ## 📝 Here is my todo list
 - [ ] ** multiple audio source support
 - [ ] ** design object modal for elements on canvas
+- [ ] ** hover event cursor management
 - [x] ** audio load on fly support
 - [x] add another layer of canvas for rendering static elements
 - [x] class implementation
@@ -151,6 +152,7 @@ window.addEventListener('DOMContentLoaded', () => {
   - [x] on pause stage
   - [x] on resume stage
   - [x] on end stage
+  - [x] on volume change
   - [x] render frame stage
   - [x] add async loader for static rendering 
 - [ ] add some ready to use renderers (hooks)
@@ -159,8 +161,8 @@ window.addEventListener('DOMContentLoaded', () => {
   - [x] progress visualization
     - [x] draggable seeking bar
   - [x] background_image
-  - [ ] album image
-  - [x] start/pause button
+  - [x] volume control
+  - [x] start/pause control
   - [ ] next/previous song button
 - [ ] Compatibility across different browsers
 - [ ] adding ability to support Three.js
