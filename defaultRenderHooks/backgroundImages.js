@@ -20,14 +20,16 @@ export const renderBackgroundImg = (avCtx) => {
 
   let srcs = [
     "https://i.ya-webdesign.com/images/angel-ring-png-3.png",
-    "https://pngimg.com/uploads/wings/wings_PNG31.png"
+    "https://pngimg.com/uploads/wings/wings_PNG31.png",
+    "https://www.iconsdb.com/icons/preview/white/volume-up-4-xxl.png"
   ];
 
   // options for each image
   // [alpha, x, y, width, height]
   let options = [
     [0.9, 500, 140, 200, 200],
-    [0.7, 0, 370, 1200, 300]
+    [0.7, 0, 370, 1200, 300],
+    [1, 470, 730, 20, 20]
   ]
 
   return Promise.all(loadImages(srcs))

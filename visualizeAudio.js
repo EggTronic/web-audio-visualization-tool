@@ -22,6 +22,7 @@ export default class AudioVisualizer {
     this.autoplay = cfg.autoplay || false;
     this.loop = cfg.loop || false;
     this.audio = document.getElementById(cfg.audio) || {};
+    if (this.audio.volume) this.audio.volume = cfg.initVolume;
     this.canvas = document.getElementById(cfg.canvas) || {};
     this.canvasStatic = document.getElementById(cfg.canvasStatic) || {};
     this.canvasCtx = this.canvas.getContext('2d') || null;

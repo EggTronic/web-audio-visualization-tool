@@ -23,7 +23,6 @@ export const renderProgressbarShadow = (avCtx) => {
  * Render progressbar.
  */
 export const renderProgressbar = (avCtx) => {
-  //console.log(avCtx);
   const renderer = (avCtx) => {
     let cx = avCtx.canvas.width / 2;
     let cy = avCtx.canvas.height / 2;
@@ -34,7 +33,7 @@ export const renderProgressbar = (avCtx) => {
     let drift = (arcPercent * Math.PI) % (1.5 * Math.PI) * 10
 
     avCtx.canvasCtx.strokeStyle = avCtx.theme.barColor;
-
+    
     avCtx.canvasCtx.beginPath();
     avCtx.canvasCtx.lineWidth = '10';
     avCtx.canvasCtx.arc(cx + correction, cy, 95, 0.5 * Math.PI + drift * 2, 0.5 * Math.PI + arcPercent * 2 * Math.PI + drift * 2);

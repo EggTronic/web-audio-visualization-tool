@@ -6,7 +6,7 @@ import { renderLounge } from './lounge.js';
 import { renderProgressbar, renderProgressbarShadow } from './progressbar.js';
 import { renderSeekBar, renderSeekBarShadow, bindSeekBarEvent } from './seekbar.js';
 import { renderPlayControl, bindPlayControlEvent } from './playControl.js';
-import { renderVolumeControl } from './volumeControl.js';
+import { renderVolumeBar, bindVolumeBarEvent } from './volumeControl.js';
 
 export {
     renderTime,
@@ -22,5 +22,6 @@ export {
     bindSeekBarEvent,
     renderPlayControl,
     bindPlayControlEvent,
-    renderVolumeControl
+    renderVolumeBar,
+    bindVolumeBarEvent
 }

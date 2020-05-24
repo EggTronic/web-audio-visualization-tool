@@ -47,7 +47,7 @@ export const renderSeekBar = (avCtx) => {
 
 /**
  * @description
- * bind tseek bar event to mouse.
+ * bind seek bar event to mouse.
  */
 export const bindSeekBarEvent = (avCtx) => {
   avCtx.canvas.addEventListener('click', (e) => {
