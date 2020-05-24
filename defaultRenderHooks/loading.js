@@ -11,12 +11,12 @@ export const renderLoading = (avCtx) => {
   return new Promise((reslove, reject) => {
     renderer(avCtx);
     let interval = setInterval(function () {
-      if (avCtx.audio.buffered.end(0) > 0) {
+      let timeRanges = avCtx.audio.buffered;
+      if (timeRanges && timeRanges.length > 0) {
         clearInterval(interval)
         reslove();
       }
     }, 200);
-
   })
 }
 
