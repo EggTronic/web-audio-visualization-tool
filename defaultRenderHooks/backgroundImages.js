@@ -69,5 +69,8 @@ export const renderBackgroundImg = (avCtx) => {
           options[index][4],
         );
       })
+    })
+    .catch(err => {
+      throw Error("failed to load image: " + err);
     });
 };
