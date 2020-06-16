@@ -19,9 +19,9 @@ export const renderBackgroundImg = (avCtx) => {
   };
 
   let srcs = [
-    "https://github.com/EggTronic/web-audio-visualization-tool/blob/master/static/ring.png",
-    "https://github.com/EggTronic/web-audio-visualization-tool/blob/master/static/wing.png",
-    "https://github.com/EggTronic/web-audio-visualization-tool/blob/master/static/volume.png"
+    "https://i.ibb.co/3WHwzQY/ring.png",
+    "https://i.ibb.co/Kzfkqd6/wing.png",
+    "https://i.ibb.co/wMgscY1/volume.png"
   ];
 
   // options for each image
