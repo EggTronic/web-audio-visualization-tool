@@ -19,9 +19,9 @@ export const renderBackgroundImg = (avCtx) => {
   };
 
   let srcs = [
-    "https://i.ya-webdesign.com/images/angel-ring-png-3.png",
-    "https://pngimg.com/uploads/wings/wings_PNG31.png",
-    "https://www.iconsdb.com/icons/preview/white/volume-up-4-xxl.png"
+    "https://github.com/EggTronic/web-audio-visualization-tool/blob/master/static/ring.png",
+    "https://github.com/EggTronic/web-audio-visualization-tool/blob/master/static/wing.png",
+    "https://github.com/EggTronic/web-audio-visualization-tool/blob/master/static/volume.png"
   ];
 
   // options for each image
