@@ -26,7 +26,7 @@ window.addEventListener('DOMContentLoaded', () => {
   'use strict';
   let ripple = new Ripple();
   let audioVisualizer = new AudioVisualizer({
-    autoplay: false,
+    autoplay: true,
     loop: true,
     initVolume: 0.5, // 0 to 1;
     fftSize: 512, // the frequency sample size for audio analyzer
