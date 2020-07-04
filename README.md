@@ -138,9 +138,16 @@ window.addEventListener('DOMContentLoaded', () => {
 
 ---
 ## 📝 Here is my todo list
+- [ ] ** get BPM estimation
 - [ ] ** multiple audio source support
 - [ ] ** design object modal for elements on canvas
+  - [x] an example of ripple class
+  - [ ] create super class for dynamic elements
+  - [ ] create super class for static elements
+  - [ ] interface for handling mouse events
+  - [ ] interface for handling key events
 - [ ] ** hover event cursor management
+- [ ] ** size - autofit container
 - [x] ** audio load on fly support
 - [x] add another layer of canvas for rendering static elements
 - [x] class implementation
