@@ -63,9 +63,11 @@ import {
   renderVolumeBar,
   bindVolumeBarEvent,
 } from './defaultRenderHooks/index.js';
+import Ripple from './defaultCanvasElements/ripple.js';
 
 window.addEventListener('DOMContentLoaded', () => {
   'use strict';
+  let ripple = new Ripple();
   let audioVisualizer = new AudioVisualizer({
     autoplay: false,
     loop: true,
@@ -115,7 +117,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // hooks that will be excuted for each frame
     // used for the main canvas
-    onFrameHook: [renderLounge, renderProgressbar, renderTime, renderSeekBar],
+    onFrameHook: [renderLounge, renderProgressbar, renderTime, renderSeekBar, ripple.render()],
 
     // you may bind your events here
     onEventHook: [bindPlayControlEvent, bindSeekBarEvent, bindVolumeBarEvent],
