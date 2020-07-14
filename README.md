@@ -15,6 +15,11 @@
 - 🛡 Modularity - use imagination to create your own audio visualization or audio player.
 - 📦 Lightweight - only few lines of code.
 - 🎨 Ready to go - there are some ready to use hooks implemented for you.
+  
+## ✨ Experimental Features
+- 🌈 BPM detection - use web-audio-beat-detector to detect BPM of the audio
+      Unstable, since it requires an AudioBuffer as input which is not provided by the audio element. Currently, I remain the original audio element since it is easy to handle the audio control. I uses another AJAX http request to get the buffer from the same audio source to get the BPM.
+      I wish one day, the we can get the AudioBuffer from audio element, before that, I would like to move BPM as a util function.
 
 --- 
 ## 🖥 Environment Support
@@ -26,27 +31,31 @@
 
 ---
 ## 🔨 Basic Usage
-> 1. In your html body you need create 2 canvas element and 1 audio element. Don't forget to add the script.
+> 1. Run `npm install`
+> 2. Run `npx rollup -c` to pack (I will put this on to cdn later)
+> 2. In your html body you need create 2 canvas element and 1 audio element. Don't forget to add the script.
 ```html
     <audio id="myAudio" src="..." data-author="..." data-title="..."></audio>
     <canvas id="myCanvas" width="800" height="400"></canvas>
     <canvas id="myStaticCanvas" width="800" height="400"></canvas>
 
+    <script src='./lib/index.js'></script>
     <script type="module" src='example.js'></script>
 ```
 
-> 2. Create an example.js file and copy the js code below into it. (you can also use your own name)
-> 3. You will need to reference 2 canvas element id and  1 audio element id to init the AudioVisualizer.
-> 4. (optional) You can reference your own canvases.
-> 5. You can reuse my example style for a better preview (it's in the index.html)
+> 3. Create an example.js file and copy the js code below into it. (you can also use your own name)
+> 4. You will need to reference 2 canvas element id and  1 audio element id to init the AudioVisualizer.
+> 5. (optional) You can reference your own canvases.
+> 6. You can reuse my example style for a better preview (it's in the index.html)
 
 ```js
-import AudioVisualizer from './visualizeAudio.js';
-import {
-  setCanvasStyle, 
-  setStaticCanvasStyle
-} from './defaultInitHooks/index.js';
-import {
+const AudioVisualizer = AudioVisualizeTool.AudioVisualizer;
+
+const {
+  Ripple
+} = AudioVisualizeTool.defaultElements;
+
+const {
   renderTime,
   renderInfo,
   renderLoading,
@@ -61,9 +70,13 @@ import {
   renderPlayControl,
   bindPlayControlEvent,
   renderVolumeBar,
-  bindVolumeBarEvent,
-} from './defaultRenderHooks/index.js';
-import Ripple from './defaultCanvasElements/ripple.js';
+  bindVolumeBarEvent
+} = AudioVisualizeTool.defaultRenderHooks;
+
+const {
+  setCanvasStyle, 
+  setStaticCanvasStyle
+} = AudioVisualizeTool.defaultInitHooks;
 
 window.addEventListener('DOMContentLoaded', () => {
   'use strict';
