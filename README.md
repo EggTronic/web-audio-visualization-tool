@@ -153,8 +153,8 @@ window.addEventListener('DOMContentLoaded', () => {
 
 ---
 ## 📝 Here is my todo list
-- [ ] ** using rollup to pack the tool
-- [ ] ** get BPM estimation
+- [x] ** using rollup to pack the tool
+- [x] ** get BPM estimation (currently as util)
 - [ ] ** multiple audio source support
 - [ ] ** design object modal for elements on canvas
   - [x] an example of ripple class
