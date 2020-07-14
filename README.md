@@ -152,9 +152,9 @@ window.addEventListener('DOMContentLoaded', () => {
 > If you have any questions or ideas just email me.
 
 ---
-## 📝 Here is my todo list
-- [x] ** using rollup to pack the tool
-- [x] ** get BPM estimation (currently as util)
+## 📝 Here is my todo list (** means on going)
+
+- [ ] ** NPM upload + cdn
 - [ ] ** multiple audio source support
 - [ ] ** design object modal for elements on canvas
   - [x] an example of ripple class
@@ -164,7 +164,9 @@ window.addEventListener('DOMContentLoaded', () => {
   - [ ] interface for handling key events
 - [ ] ** hover event cursor management
 - [ ] ** size - autofit container
-- [x] ** audio load on fly support
+- [x] using rollup to pack the tool
+- [x] get BPM estimation (currently as util)
+- [x] audio load on fly support
 - [x] add another layer of canvas for rendering static elements
 - [x] class implementation
 - [x] include canvas2d as render engine 
