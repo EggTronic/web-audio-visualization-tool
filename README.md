@@ -20,7 +20,8 @@
 - 🌈 BPM detection - use web-audio-beat-detector to detect BPM of the audio
       Unstable, since it requires an AudioBuffer as input which is not provided by the audio element. Currently, I remain the original audio element since it is easy to handle the audio control. I uses another AJAX http request to get the buffer from the same audio source to get the BPM.
       I wish one day, the we can get the AudioBuffer from audio element, before that, I would like to move BPM as a util function.
-
+     
+     You can access the BPM detection function through util (I will move it to util soon)
 --- 
 ## 🖥 Environment Support
 - Currently only support the latest browsers such as Chrome, but will implement the support for more browers in the future.
@@ -152,10 +153,11 @@ window.addEventListener('DOMContentLoaded', () => {
 > If you have any questions or ideas just email me.
 
 ---
-## 📝 Here is my todo list
-- [x] ** using rollup to pack the tool
-- [x] ** get BPM estimation (currently as util)
+## 📝 Here is my todo list (** means on going)
+
+- [ ] ** NPM upload + cdn
 - [ ] ** multiple audio source support
+- [ ] ** Refactor to TypeScript
 - [ ] ** design object modal for elements on canvas
   - [x] an example of ripple class
   - [ ] create super class for dynamic elements
@@ -164,7 +166,9 @@ window.addEventListener('DOMContentLoaded', () => {
   - [ ] interface for handling key events
 - [ ] ** hover event cursor management
 - [ ] ** size - autofit container
-- [x] ** audio load on fly support
+- [x] using rollup to pack the tool
+- [x] get BPM estimation (currently as util)
+- [x] audio load on fly support
 - [x] add another layer of canvas for rendering static elements
 - [x] class implementation
 - [x] include canvas2d as render engine 
