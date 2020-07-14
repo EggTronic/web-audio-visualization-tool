@@ -158,7 +158,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 ---
 ## 📝 Here is my todo list (** means on going)
-
+- [ ] ** Extra acc of timer (00:00:0)
 - [ ] ** NPM upload + cdn
 - [ ] ** multiple audio source support
 - [ ] ** Refactor to TypeScript
