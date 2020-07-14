@@ -50,46 +50,49 @@
 > 6. You can reuse my example style for a better preview (it's in the index.html)
 
 ```js
-const AudioVisualizer = AudioVisualizeTool.AudioVisualizer;
-
-const {
-  Ripple
-} = AudioVisualizeTool.defaultElements;
-
-const {
-  renderTime,
-  renderInfo,
-  renderLoading,
-  clearLoading,
-  renderBackgroundImg,
-  renderLounge,
-  renderProgressbar,
-  renderProgressbarShadow,
-  renderSeekBar,
-  renderSeekBarShadow,
-  bindSeekBarEvent,
-  renderPlayControl,
-  bindPlayControlEvent,
-  renderVolumeBar,
-  bindVolumeBarEvent
-} = AudioVisualizeTool.defaultRenderHooks;
-
-const {
-  setCanvasStyle, 
-  setStaticCanvasStyle
-} = AudioVisualizeTool.defaultInitHooks;
-
 window.addEventListener('DOMContentLoaded', () => {
   'use strict';
+  
+  const AudioVisualizer = AudioVisualizeTool.AudioVisualizer;
+
+  const {
+    Ripple
+  } = AudioVisualizeTool.defaultElements;
+
+  const {
+    renderTime,
+    renderInfo,
+    renderLoading,
+    clearLoading,
+    renderBackgroundImg,
+    renderLounge,
+    renderProgressbar,
+    renderProgressbarShadow,
+    renderSeekBar,
+    renderSeekBarShadow,
+    bindSeekBarEvent,
+    renderPlayControl,
+    bindPlayControlEvent,
+    renderVolumeBar,
+    bindVolumeBarEvent
+  } = AudioVisualizeTool.defaultRenderHooks;
+
+  const {
+    setCanvasStyle,
+    setStaticCanvasStyle
+  } = AudioVisualizeTool.defaultInitHooks;
+
   let ripple = new Ripple();
   let audioVisualizer = new AudioVisualizer({
-    autoplay: false,
+    autoplay: true,
     loop: true,
     initVolume: 0.5, // 0 to 1;
     fftSize: 512, // the frequency sample size for audio analyzer
     framesPerSecond: 60, // the refresh rate for rendering canvas (not static canvas)
 
     audio: 'myAudio',
+    audioURLs: ['./static/reverie.mp3'], // these urls are for tempo(NPM) detection only
+
     canvas: 'myCanvas', // main canvas for rendering frames
     canvasStatic: 'myStaticCanvas', // static canvas
     customCanvases: [], // you can add your own canvases
