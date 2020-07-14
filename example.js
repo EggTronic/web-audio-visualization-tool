@@ -1,9 +1,17 @@
-import AudioVisualizer from './visualizeAudio.js';
-import {
-  setCanvasStyle, 
-  setStaticCanvasStyle
-} from './defaultInitHooks/index.js';
-import {
+// import {
+//   AudioVisualizer, 
+//   defaultElements, 
+//   defaultInitHooks, 
+//   defaultRenderHooks
+// } from "./lib/index.js";
+
+const AudioVisualizer = AudioVisualizeTool.AudioVisualizer;
+
+const {
+  Ripple
+} = AudioVisualizeTool.defaultElements;
+
+const {
   renderTime,
   renderInfo,
   renderLoading,
@@ -18,9 +26,13 @@ import {
   renderPlayControl,
   bindPlayControlEvent,
   renderVolumeBar,
-  bindVolumeBarEvent,
-} from './defaultRenderHooks/index.js';
-import Ripple from './defaultCanvasElements/ripple.js';
+  bindVolumeBarEvent
+} = AudioVisualizeTool.defaultRenderHooks;
+
+const {
+  setCanvasStyle, 
+  setStaticCanvasStyle
+} = AudioVisualizeTool.defaultInitHooks;
 
 window.addEventListener('DOMContentLoaded', () => {
   'use strict';
@@ -31,8 +43,10 @@ window.addEventListener('DOMContentLoaded', () => {
     initVolume: 0.5, // 0 to 1;
     fftSize: 512, // the frequency sample size for audio analyzer
     framesPerSecond: 60, // the refresh rate for rendering canvas (not static canvas)
-
+    
     audio: 'myAudio',
+    audioURLs: ['./static/reverie.mp3'], // these urls are for tempo(NPM) detection only
+    
     canvas: 'myCanvas', // main canvas for rendering frames
     canvasStatic: 'myStaticCanvas', // static canvas
     customCanvases: [], // you can add your own canvases

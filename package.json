@@ -1,0 +1,36 @@
+{
+  "name": "audio-visualization-tool",
+  "version": "0.0.1",
+  "description": "Light weight tool for customize audio player with visualization effects",
+  "main": "visualizeAudio.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EggTronic/web-audio-visualization-tool.git"
+  },
+  "keywords": [
+    "audio",
+    "visualization",
+    "canvas",
+    "customizable"
+  ],
+  "author": "EggTronic",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/EggTronic/web-audio-visualization-tool/issues"
+  },
+  "homepage": "https://github.com/EggTronic/web-audio-visualization-tool#readme",
+  "dependencies": {
+    "web-audio-beat-detector": "^8.0.20"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.10.4",
+    "@babel/plugin-proposal-class-properties": "^7.10.4",
+    "@babel/preset-typescript": "^7.10.4",
+    "@rollup/plugin-babel": "^5.1.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-peer-deps-external": "^2.2.3"
+  }
+}

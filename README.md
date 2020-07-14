@@ -140,6 +140,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 ---
 ## 📝 Here is my todo list
+- [ ] ** using rollup to pack the tool
 - [ ] ** get BPM estimation
 - [ ] ** multiple audio source support
 - [ ] ** design object modal for elements on canvas

@@ -1,16 +1,19 @@
+import { analyze } from 'web-audio-beat-detector';
+import { getTempo } from '../utils/index';
+
 export default class AudioVisualizer {
   constructor(cfg) {
     this.beforeInitHook = cfg.beforeInitHook || [],
-    this.afterInitHook = cfg.afterInitHook || [],
-    this.beforeLoadAudioHook = cfg.beforeLoadAudioHook || [],
-    this.afterLoadAudioHook = cfg.afterLoadAudioHook || [],
-    this.beforeStartHook = cfg.beforeStartHook || [],
-    this.afterStartHook = cfg.afterStartHook || [],
-    this.beforePauseHook = cfg.beforePauseHook || [],
-    this.afterPauseHook = cfg.afterPauseHook || [],
-    this.beforeResumeHook = cfg.beforeResumeHook || [],
-    this.afterResumeHook = cfg.afterResumeHook || [],
-    this.onFrameHook = cfg.onFrameHook || [];
+      this.afterInitHook = cfg.afterInitHook || [],
+      this.beforeLoadAudioHook = cfg.beforeLoadAudioHook || [],
+      this.afterLoadAudioHook = cfg.afterLoadAudioHook || [],
+      this.beforeStartHook = cfg.beforeStartHook || [],
+      this.afterStartHook = cfg.afterStartHook || [],
+      this.beforePauseHook = cfg.beforePauseHook || [],
+      this.afterPauseHook = cfg.afterPauseHook || [],
+      this.beforeResumeHook = cfg.beforeResumeHook || [],
+      this.afterResumeHook = cfg.afterResumeHook || [],
+      this.onFrameHook = cfg.onFrameHook || [];
     this.beforeStaticHook = cfg.beforeStaticHook || [];
     this.onStaticHook = cfg.onStaticHook || [];
     this.onEventHook = cfg.onEventHook || [];
@@ -21,6 +24,11 @@ export default class AudioVisualizer {
     this.isLoading = false;
     this.autoplay = cfg.autoplay || false;
     this.loop = cfg.loop || false;
+
+    // these urls are for tempo(NPM) detection only
+    this.audioURLs = cfg.audioURLs || null;
+    this.currentAudioIndex = this.audioURLs ? 0 : null;
+
     this.audio = document.getElementById(cfg.audio) || {};
     if (this.audio.volume) this.audio.volume = cfg.initVolume;
     this.canvas = document.getElementById(cfg.canvas) || {};
@@ -36,6 +44,7 @@ export default class AudioVisualizer {
     this.framesPerSecond = cfg.framesPerSecond || null;
     this.sourceNode = null;
     this.frequencyData = [];
+    this.tempo = null;
     this.minutes = "00";
     this.seconds = "00";
     this.theme = cfg.theme || {
@@ -53,16 +62,16 @@ export default class AudioVisualizer {
 
   init = () => {
     this._executeAsyncHook(this.beforeInitHook).then(() => {
-        this._setContext();
-        this._setAnalyser();
-        this._setFrequencyData();
-        this._setBufferSourceNode();
-        this._setMediaSource();
-        this._bindEvents();
-        this._renderStatic();
-        this._executeHook(this.afterInitHook);
-        this.loadSound();
-      }
+      this._setContext();
+      this._setAnalyser();
+      this._setFrequencyData();
+      this._setBufferSourceNode();
+      this._setMediaSource();
+      this._bindEvents();
+      this._renderStatic();
+      this._executeHook(this.afterInitHook);
+      this.loadSound(this.currentAudioIndex);
+    }
     );
   }
 
@@ -124,6 +133,30 @@ export default class AudioVisualizer {
 
   /**
    * @description
+   * This is an experimental method
+   * Detect and set the tempo from media source.
+   * Since audio buffer cannot get from audio element,
+   * It will fetch full buffer from another http request of the same sound
+   */
+  _detectTEMPO = () => {
+    if (this.currentAudioIndex > -1) {
+      getTempo(this.audioURLs[this.currentAudioIndex], (res) => {
+        let audioData = res.response;
+        this.ctx.decodeAudioData(audioData).then((buffer) => {
+          analyze(buffer).then(
+            (tempo) => {
+              this.tempo = tempo;
+              console.log('detected BPM: ' + tempo)
+            }
+          );
+        }
+        )
+      })
+    }
+  }
+
+  /**
+   * @description
    * Bind events.
    *
    */
@@ -135,15 +168,20 @@ export default class AudioVisualizer {
    * @description
    * Execute hooks before playing sound
    */
-  loadSound = () => {
+  loadSound = (nextAudioIndex) => {
+    // experimental method to detect tempo
+    this.currentAudioIndex = nextAudioIndex;
+    this._detectTEMPO();
+
     this.isLoading = true;
+
     this._executeAsyncHook(this.beforeLoadAudioHook).then(() => {
-        this.isLoading = false;
-        this._executeHook(this.afterLoadAudioHook);
-        if (this.autoplay) {
-          this.playSound();
-        }
+      this.isLoading = false;
+      this._executeHook(this.afterLoadAudioHook);
+      if (this.autoplay) {
+        this.playSound();
       }
+    }
     )
   };
 
@@ -151,31 +189,30 @@ export default class AudioVisualizer {
    * @description
    * Play sound from the given buffer.
    *
-   * @param  {Object} buffer
    */
-  playSound = (buffer) => {
+  playSound = () => {
     if (this.audio.pause) {
       this._executeAsyncHook(this.beforeResumeHook).then(() => {
-          this.isLoading = false;
-          this.isPlaying = true;
-          this.audio.play();
-          this._renderFrame();
-          this._executeHook(this.afterResumeHook);
-        }
+        this.isLoading = false;
+        this.isPlaying = true;
+        this.audio.play();
+        this._renderFrame();
+        this._executeHook(this.afterResumeHook);
+      }
       );
     } else {
       this._executeAsyncHook(this.beforeStartHook).then(() => {
-          this.loading = false;
-          this.isPlaying = true;
-          this.sourceNode.disconnect();
-          this._setBufferSourceNode();
-          // this.sourceNode.buffer = buffer;
-          // this.sourceNode.start(0);
-          this._resetTimer();
-          this._startTimer();
-          this._renderFrame();
-          this._executeHook(this.afterStartHook);
-        }
+        this.loading = false;
+        this.isPlaying = true;
+        this.sourceNode.disconnect();
+        this._setBufferSourceNode();
+        // this.sourceNode.buffer = buffer;
+        // this.sourceNode.start(0);
+        this._resetTimer();
+        this._startTimer();
+        this._renderFrame();
+        this._executeHook(this.afterStartHook);
+      }
       );
     }
   };
@@ -186,10 +223,10 @@ export default class AudioVisualizer {
    */
   pauseSound = () => {
     this._executeAsyncHook(this.beforePauseHook).then(() => {
-        this.audio.pause();
-        this.isPlaying = false;
-        this._executeHook(this.afterPauseHook);
-      }
+      this.audio.pause();
+      this.isPlaying = false;
+      this._executeHook(this.afterPauseHook);
+    }
     );
   };
 
@@ -206,7 +243,7 @@ export default class AudioVisualizer {
    * Set volume.
    */
   setVolume = (volume) => {
-    if(0 <= volume <= 1){
+    if (0 <= volume <= 1) {
       this.audio.volume = volume;
     } else {
       this.audio.volume = volume < 0 ? 0 : 1
@@ -274,7 +311,7 @@ export default class AudioVisualizer {
     this.canvasCtx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this._updateTime();
     this.analyser.getByteFrequencyData(this.frequencyData);
-    
+
     this._executeHook(this.onFrameHook);
   };
 
