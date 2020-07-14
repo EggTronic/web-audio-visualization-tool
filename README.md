@@ -31,7 +31,7 @@
 | latest versions | latest versions |
 
 ---
-## 🔨 Basic Usage
+## 🔨 Basic Usage (Development)
 > 1. Run `npm install`
 > 2. Run `npx rollup -c` to pack (I will put this on to cdn later)
 > 2. In your html body you need create 2 canvas element and 1 audio element. Don't forget to add the script.
