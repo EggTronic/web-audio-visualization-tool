@@ -20,7 +20,8 @@
 - 🌈 BPM detection - use web-audio-beat-detector to detect BPM of the audio
       Unstable, since it requires an AudioBuffer as input which is not provided by the audio element. Currently, I remain the original audio element since it is easy to handle the audio control. I uses another AJAX http request to get the buffer from the same audio source to get the BPM.
       I wish one day, the we can get the AudioBuffer from audio element, before that, I would like to move BPM as a util function.
-
+     
+     You can access the BPM detection function through util (I will move it to util soon)
 --- 
 ## 🖥 Environment Support
 - Currently only support the latest browsers such as Chrome, but will implement the support for more browers in the future.
