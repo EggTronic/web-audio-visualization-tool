@@ -156,6 +156,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 - [ ] ** NPM upload + cdn
 - [ ] ** multiple audio source support
+- [ ] ** Refactor to TypeScript
 - [ ] ** design object modal for elements on canvas
   - [x] an example of ripple class
   - [ ] create super class for dynamic elements
