@@ -32,11 +32,17 @@ window.addEventListener('DOMContentLoaded', () => {
 
   let ripple = new Ripple();
   let audioVisualizer = new AudioVisualizer({
-    autoplay: true,
+    autoplay: false,
     loop: true,
     initVolume: 0.5, // 0 to 1;
-    fftSize: 512, // the frequency sample size for audio analyzer
-    framesPerSecond: 60, // the refresh rate for rendering canvas (not static canvas)
+
+    // the frequency sample size for audio analyzer
+    // Must be a power of 2 between 25 and 215, like 32, 64, 128, 256, 512, 1024, 2048,
+    // Defaults to 512.
+    fftSize: 512, 
+
+    // the refresh rate for rendering canvas (not static canvas)
+    framesPerSecond: 60, 
 
     audio: 'myAudio',
     audioURLs: ['./static/reverie.mp3'], // these urls are for tempo(NPM) detection only
