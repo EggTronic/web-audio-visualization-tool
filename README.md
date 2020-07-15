@@ -2,7 +2,7 @@
 # 🎧 audio-visualization-toolkit
 
 > Lightweight and customizable audio visualization toolkit build up on web audio api.
-
+> A thin wrapper of Audio Element and Web Audio API.
 > It currently uses canvas2D as the graphic engine, I will implement the ability to use Three.js later.
 > 
 
@@ -16,13 +16,9 @@
 - 📦 Lightweight - only few lines of code.
 - 🎨 Ready to go - there are some ready to use hooks implemented for you.
   
-## ✨ Experimental Features
-- 🌈 BPM detection - use web-audio-beat-detector to detect BPM of the audio
-      Unstable, since it requires an AudioBuffer as input which is not provided by the audio element. Currently, I remain the original audio element since it is easy to handle the audio control. I uses another AJAX http request to get the buffer from the same audio source to get the BPM.
-      I wish one day, the we can get the AudioBuffer from audio element, before that, I would like to move BPM as a util function.
-     
-     You can see a log of BPM info from browser console (f12) once audio has been loaded.
-     You can access the BPM detection function through util (I will move it to util soon).
+## ✨ Useful Libraries
+- 🌈 web-audio-beat-detector - use it to detect BPM of the audio
+  
 --- 
 ## 🖥 Environment Support
 - Currently only support the latest browsers such as Chrome, but will implement the support for more browers in the future.
@@ -32,10 +28,14 @@
 | latest versions | latest versions |
 
 ---
-## 🔨 Basic Usage (Development)
+## 🔨 Development
 > 1. Run `npm install`
-> 2. Run `npx rollup -c` to pack (I will put this on to cdn later)
-> 2. In your html body you need create 2 canvas element and 1 audio element. Don't forget to add the script.
+> 2. Run `npm run build` to build
+> 3. Run `npm run dev` for development
+
+---
+## ✨ Basic Usage (Development)
+> 1. In your html body you need create 2 canvas element and 1 audio element. Don't forget to add the script.
 ```html
     <audio id="myAudio" src="..." data-author="..." data-title="..."></audio>
     <canvas id="myCanvas" width="800" height="400"></canvas>
@@ -45,10 +45,10 @@
     <script type="module" src='example.js'></script>
 ```
 
-> 3. Create an example.js file and copy the js code below into it. (you can also use your own name)
-> 4. You will need to reference 2 canvas element id and  1 audio element id to init the AudioVisualizer.
-> 5. (optional) You can reference your own canvases.
-> 6. You can reuse my example style for a better preview (it's in the index.html)
+> 2. Create an example.js file and copy the js code below into it. (you can also use your own name)
+> 3. You will need to reference 2 canvas element id and  1 audio element id to init the AudioVisualizer.
+> 4. (optional) You can reference your own canvases.
+> 5. You can reuse my example style for a better preview (it's in the index.html)
 
 ```js
 window.addEventListener('DOMContentLoaded', () => {
@@ -85,7 +85,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
   let ripple = new Ripple();
   let audioVisualizer = new AudioVisualizer({
-    autoplay: true,
+    autoplay: false,
     loop: true,
     initVolume: 0.5, // 0 to 1;
     fftSize: 512, // the frequency sample size for audio analyzer
@@ -158,7 +158,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
 ---
 ## 📝 Here is my todo list (** means on going)
-- [ ] ** Extra acc of timer (00:00:0)
 - [ ] ** NPM upload + cdn
 - [ ] ** multiple audio source support
 - [ ] ** Refactor to TypeScript
@@ -171,7 +170,6 @@ window.addEventListener('DOMContentLoaded', () => {
 - [ ] ** hover event cursor management
 - [ ] ** size - autofit container
 - [x] using rollup to pack the tool
-- [x] get BPM estimation (currently as util)
 - [x] audio load on fly support
 - [x] add another layer of canvas for rendering static elements
 - [x] class implementation
