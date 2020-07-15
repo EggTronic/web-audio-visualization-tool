@@ -1,6 +1,8 @@
 
 # 🎧 audio-visualization-toolkit
 
+[![MIT License](https://img.shields.io/apm/l/atomic-design-ui.svg?)](https://github.com/tterb/atomic-design-ui/blob/master/LICENSEs)
+[![Version](https://badge.fury.io/gh/tterb%2FHyde.svg)](https://badge.fury.io/gh/tterb%2FHyde)
 [![](https://data.jsdelivr.com/v1/package/npm/audio-visualization-tool/badge)](https://www.jsdelivr.com/package/npm/audio-visualization-tool)
 
 
