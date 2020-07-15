@@ -57,7 +57,7 @@
     <canvas id="myCanvas" width="800" height="400"></canvas>
     <canvas id="myStaticCanvas" width="800" height="400"></canvas>
 
-    <script src='https://cdn.jsdelivr.net/npm/audio-visualization-tool@0.0.1/lib/index.js'></script>
+    <script src='https://cdn.jsdelivr.net/npm/audio-visualization-tool@0.0.2/lib/index.js'></script>
     <script type="module" src='example.js'></script>
 ```
 
