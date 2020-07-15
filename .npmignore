@@ -2,3 +2,5 @@
 /static/
 /example.js
 /index.html
+/rollup.config.js
+/babel.config.js
