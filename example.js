@@ -45,8 +45,7 @@ window.addEventListener('DOMContentLoaded', () => {
     framesPerSecond: 60, 
 
     audio: 'myAudio',
-    audioURLs: ['./static/reverie.mp3'], // these urls are for tempo(NPM) detection only
-
+    
     canvas: 'myCanvas', // main canvas for rendering frames
     canvasStatic: 'myStaticCanvas', // static canvas
     customCanvases: [], // you can add your own canvases
