@@ -28,7 +28,7 @@ export const renderBackgroundImg = (avCtx) => {
   // [alpha, x, y, width, height]
   let options = [
     [0.9, 500, 140, 200, 200],
-    [0.7, 0, 370, 1200, 300],
+    [0.6, 0, 360, 1200, 300],
     [1, 470, 730, 20, 20]
   ]
 
@@ -52,7 +52,7 @@ export const renderBackgroundImg = (avCtx) => {
       avCtx.canvasStaticCtx.closePath();
 
       avCtx.canvasStaticCtx.beginPath();
-      avCtx.canvasStaticCtx.globalAlpha = 0.8;
+      avCtx.canvasStaticCtx.globalAlpha = 0.4;
       avCtx.canvasStaticCtx.fillStyle = "black";
       avCtx.canvasStaticCtx.arc(cx, cy, 90, 0.5 * Math.PI, 0.5 * Math.PI + 2 * Math.PI);
       avCtx.canvasStaticCtx.fill();
