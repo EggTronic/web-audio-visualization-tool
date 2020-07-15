@@ -3,7 +3,7 @@ import babel from '@rollup/plugin-babel';
 import resolve from 'rollup-plugin-node-resolve';
 import peerDepsExternal from 'rollup-plugin-peer-deps-external';
 import serve from 'rollup-plugin-serve';
-import livereload from 'rollup-plugin-livereload'
+import livereload from 'rollup-plugin-livereload';
 
 const env = process.env.BUILD || 'development';
 
