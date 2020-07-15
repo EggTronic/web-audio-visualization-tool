@@ -1,6 +1,6 @@
 {
   "name": "audio-visualization-tool",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Light weight tool for customize audio player with visualization effects",
   "main": "visualizeAudio.js",
   "scripts": {
