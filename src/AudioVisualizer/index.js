@@ -1,6 +1,3 @@
-import { analyze } from 'web-audio-beat-detector';
-import { getTempo } from '../utils/index';
-
 export default class AudioVisualizer {
   constructor(cfg) {
     this.beforeInitHook = cfg.beforeInitHook || [],
@@ -25,10 +22,6 @@ export default class AudioVisualizer {
     this.autoplay = cfg.autoplay || false;
     this.loop = cfg.loop || false;
 
-    // these urls are for tempo(NPM) detection only
-    this.audioURLs = cfg.audioURLs || null;
-    this.currentAudioIndex = this.audioURLs ? 0 : null;
-
     this.audio = document.getElementById(cfg.audio) || {};
     if (this.audio.volume) this.audio.volume = cfg.initVolume;
     this.canvas = document.getElementById(cfg.canvas) || {};
@@ -44,7 +37,6 @@ export default class AudioVisualizer {
     this.framesPerSecond = cfg.framesPerSecond || null;
     this.sourceNode = null;
     this.frequencyData = [];
-    this.tempo = null;
     this.minutes = "00";
     this.seconds = "00";
     this.theme = cfg.theme || {
@@ -70,7 +62,7 @@ export default class AudioVisualizer {
       this._bindEvents();
       this._renderStatic();
       this._executeHook(this.afterInitHook);
-      this.loadSound(this.currentAudioIndex);
+      this.loadSound();
     }
     );
   }
@@ -116,7 +108,6 @@ export default class AudioVisualizer {
    */
   _setBufferSourceNode = () => {
     this.audio.loop = this.loop;
-
     this.sourceNode = this.ctx.createMediaElementSource(this.audio);
     this.sourceNode.connect(this.analyser);
     this.sourceNode.connect(this.ctx.destination);
@@ -133,30 +124,6 @@ export default class AudioVisualizer {
 
   /**
    * @description
-   * This is an experimental method
-   * Detect and set the tempo from media source.
-   * Since audio buffer cannot get from audio element,
-   * It will fetch full buffer from another http request of the same sound
-   */
-  _detectTEMPO = () => {
-    if (this.currentAudioIndex > -1) {
-      getTempo(this.audioURLs[this.currentAudioIndex], (res) => {
-        let audioData = res.response;
-        this.ctx.decodeAudioData(audioData).then((buffer) => {
-          analyze(buffer).then(
-            (tempo) => {
-              this.tempo = tempo;
-              console.log('detected BPM: ' + tempo)
-            }
-          );
-        }
-        )
-      })
-    }
-  }
-
-  /**
-   * @description
    * Bind events.
    *
    */
@@ -168,13 +135,8 @@ export default class AudioVisualizer {
    * @description
    * Execute hooks before playing sound
    */
-  loadSound = (nextAudioIndex) => {
-    // experimental method to detect tempo
-    this.currentAudioIndex = nextAudioIndex;
-    this._detectTEMPO();
-
+  loadSound = () => {
     this.isLoading = true;
-
     this._executeAsyncHook(this.beforeLoadAudioHook).then(() => {
       this.isLoading = false;
       this._executeHook(this.afterLoadAudioHook);
@@ -206,8 +168,6 @@ export default class AudioVisualizer {
         this.isPlaying = true;
         this.sourceNode.disconnect();
         this._setBufferSourceNode();
-        // this.sourceNode.buffer = buffer;
-        // this.sourceNode.start(0);
         this._resetTimer();
         this._startTimer();
         this._renderFrame();
@@ -311,7 +271,6 @@ export default class AudioVisualizer {
     this.canvasCtx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this._updateTime();
     this.analyser.getByteFrequencyData(this.frequencyData);
-
     this._executeHook(this.onFrameHook);
   };
 

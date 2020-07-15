@@ -45,6 +45,15 @@ export const renderProgressbar = (avCtx) => {
     avCtx.canvasCtx.arc(cx + correction, cy, 85, 0.5 * Math.PI - drift, 0.5 * Math.PI - arcPercent * 2 * Math.PI - drift);
     avCtx.canvasCtx.stroke();
     avCtx.canvasCtx.closePath();
+
+    avCtx.canvasCtx.beginPath();
+    avCtx.canvasCtx.lineWidth = '10';
+    avCtx.canvasCtx.strokeStyle = "rgba(2,2,2,0.1)";
+    avCtx.canvasCtx.arc(cx + correction, cy, 105  + (avCtx.frequencyData[9]/256) * 10, 0, 2 * Math.PI);
+    avCtx.canvasCtx.stroke();
+    avCtx.canvasCtx.closePath();
+
+    avCtx.canvasCtx.strokeStyle = avCtx.theme.barColor;
   }
 
   renderer(avCtx);
