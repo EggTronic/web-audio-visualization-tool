@@ -1,8 +1,13 @@
 
 # 🎧 audio-visualization-toolkit
 
+[![](https://data.jsdelivr.com/v1/package/npm/audio-visualization-tool/badge)](https://www.jsdelivr.com/package/npm/audio-visualization-tool)
+
+
 > Lightweight and customizable audio visualization toolkit build up on web audio api.
+
 > A thin wrapper of Audio Element and Web Audio API.
+
 > It currently uses canvas2D as the graphic engine, I will implement the ability to use Three.js later.
 > 
 
@@ -34,14 +39,23 @@
 > 3. Run `npm run dev` for development
 
 ---
-## ✨ Basic Usage (Development)
-> 1. In your html body you need create 2 canvas element and 1 audio element. Don't forget to add the script.
+## ✨ Basic Usage
+> 1. You can install it from npm (unstable) 
+>    ```
+>    `npm install --save audio-visualization-tool`
+>    ```
+>
+>    You can also get it from cdn in script tag
+>    ```
+>    <script src='https://cdn.jsdelivr.net/npm/audio-visualization-tool@0.0.1/lib/index.js'></script>
+>    ```
+> 2. In your html body you need create 2 canvas element and 1 audio element.
 ```html
     <audio id="myAudio" src="..." data-author="..." data-title="..."></audio>
     <canvas id="myCanvas" width="800" height="400"></canvas>
     <canvas id="myStaticCanvas" width="800" height="400"></canvas>
 
-    <script src='./lib/index.js'></script>
+    <script src='https://cdn.jsdelivr.net/npm/audio-visualization-tool@0.0.1/lib/index.js'></script>
     <script type="module" src='example.js'></script>
 ```
 
