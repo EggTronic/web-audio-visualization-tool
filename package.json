@@ -19,7 +19,7 @@
     "customizable"
   ],
   "author": "EggTronic",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/EggTronic/web-audio-visualization-tool/issues"
   },
