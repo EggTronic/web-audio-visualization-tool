@@ -4,28 +4,12 @@ export default class ProgressCircle {
       xoffset: 0,
       yoffset: 0,
       radius: 80,
-      width: 11,
+      width: 10,
       color: '#fff',
-      opacity: 0.7,
-      shadowColor: '#fff',
-      shadowOpacity: 0.3
+      opacity: 1,
+      reverse: false,
     };
     this.options = Object.assign(defaultOptions, options);
-  }
-
-  _strokeCircleShadow(avCtx) {
-    let cx = avCtx.canvasStatic.width / 2;
-    let cy = avCtx.canvasStatic.height / 2;
-
-    avCtx.canvasStaticCtx.strokeStyle = avCtx.theme.barColor;
-    avCtx.canvasStaticCtx.lineWidth = '10';
-
-    avCtx.canvasStaticCtx.beginPath();
-    avCtx.canvasStaticCtx.arc(cx, cy, 100, 0.5 * Math.PI, 0.5 * Math.PI + 2 * Math.PI);
-    avCtx.canvasStaticCtx.globalAlpha = 0.1;
-    avCtx.canvasStaticCtx.stroke();
-    avCtx.canvasStaticCtx.closePath();
-    avCtx.canvasStaticCtx.globalAlpha = 1;
   }
 
   _strokeCircleLine(avCtx) {
@@ -35,17 +19,18 @@ export default class ProgressCircle {
     let arcPercent = avCtx.audio.currentTime / avCtx.audio.duration;
     let drift = (arcPercent * Math.PI) % (1.5 * Math.PI) * 10
 
-    avCtx.canvasCtx.strokeStyle = avCtx.theme.barColor;
+    avCtx.canvasCtx.strokeStyle = this.options.color;
     
     avCtx.canvasCtx.beginPath();
     avCtx.canvasCtx.lineWidth = '3';
-    avCtx.canvasCtx.arc(cx, cy, 85, 0.5 * Math.PI - drift, 0.5 * Math.PI - arcPercent * 2 * Math.PI - drift);
+    avCtx.canvasCtx.arc(cx + this.options.xoffset, cy + this.options.yoffset, 85, 0.5 * Math.PI - drift, 0.5 * Math.PI - arcPercent * 2 * Math.PI - drift);
+    avCtx.canvasCtx.globalAlpha = this.options.opacity;
     avCtx.canvasCtx.stroke();
     avCtx.canvasCtx.closePath();
+    avCtx.canvasCtx.globalAlpha = 1;
   }
 
   _strokeCircle(avCtx) {
-    this._strokeCircleShadow(avCtx);
     this._strokeCircleLine(avCtx);
   }
 
