@@ -1,4 +1,4 @@
-export default class ProgressCircle {
+export default class BeatRing {
   constructor(options = {}) {
     const defaultOptions = {
       xoffset: 0,
@@ -8,6 +8,13 @@ export default class ProgressCircle {
       color: '#fff',
       opacity: 1,
       reverse: false,
+      rotate: {
+        speed: 0
+      },
+      beat: {
+        strength: 0,
+        frequencySource: 9 // 1...256
+      }
     };
     this.options = Object.assign(defaultOptions, options);
   }
@@ -17,13 +24,18 @@ export default class ProgressCircle {
     let cy = avCtx.canvas.height / 2;
 
     let arcPercent = avCtx.audio.currentTime / avCtx.audio.duration;
-    let drift = (arcPercent * Math.PI) % (1.5 * Math.PI) * 10
+    let drift = (arcPercent * Math.PI) % (1.5 * Math.PI) * this.options.rotate.speed;
 
     avCtx.canvasCtx.strokeStyle = this.options.color;
     
     avCtx.canvasCtx.beginPath();
-    avCtx.canvasCtx.lineWidth = '3';
-    avCtx.canvasCtx.arc(cx + this.options.xoffset, cy + this.options.yoffset, 85, 0.5 * Math.PI - drift, 0.5 * Math.PI - arcPercent * 2 * Math.PI - drift);
+    avCtx.canvasCtx.lineWidth = this.options.width;
+    avCtx.canvasCtx.arc(
+      cx + this.options.xoffset, 
+      cy + this.options.yoffset, 
+      this.options.radius + (avCtx.frequencyData[this.options.beat.frequencySource]/256) * this.options.beat.strength, 
+      0.5 * Math.PI - drift, 
+      0.5 * Math.PI - arcPercent * 2 * Math.PI - drift);
     avCtx.canvasCtx.globalAlpha = this.options.opacity;
     avCtx.canvasCtx.stroke();
     avCtx.canvasCtx.closePath();
