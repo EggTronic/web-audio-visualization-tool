@@ -12,8 +12,6 @@ import {
   clearLoading,
   renderBackgroundImg,
   renderLounge,
-  renderProgressbar,
-  renderProgressbarShadow,
   renderSeekBar,
   renderSeekBarShadow,
   bindSeekBarEvent,
@@ -25,7 +23,7 @@ import {
 
 import {
   Ripple,
-  ProgressCircle
+  Ring
 } from './defaultCanvasElements/index.js';
 
 const defaultInitHooks = {
@@ -40,8 +38,6 @@ const defaultRenderHooks = {
   clearLoading,
   renderBackgroundImg,
   renderLounge,
-  renderProgressbar,
-  renderProgressbarShadow,
   renderSeekBar,
   renderSeekBarShadow,
   bindSeekBarEvent,
@@ -53,12 +49,13 @@ const defaultRenderHooks = {
 
 const defaultElements = {
   Ripple,
-  ProgressCircle
+  Ring
 }
 
-export {
+const AV = {
   AudioVisualizer,
   defaultInitHooks,
   defaultRenderHooks,
   defaultElements
 }
+export default AV;

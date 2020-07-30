@@ -48,6 +48,7 @@ export default class Ripple {
       line.r += this.options.radiusGrow * line.o;
       line.o = (this.options.size - line.r + 1)/(this.options.size - this.options.radius);
       line.w = this.options.width * line.o;
+      line.c = this.options.color;
       return line;
     })
 
@@ -60,7 +61,7 @@ export default class Ripple {
     this.rippleLines.forEach(line => {
       let cx = avCtx.canvas.width / 2;
       let cy = avCtx.canvas.height / 2;
-
+      
       avCtx.canvasCtx.beginPath();
       avCtx.canvasCtx.arc(cx, cy, line.r, 0.5 * Math.PI, 0.5 * Math.PI + 2 * Math.PI);
       avCtx.canvasCtx.strokeStyle = line.c;

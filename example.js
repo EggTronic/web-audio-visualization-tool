@@ -1,10 +1,11 @@
 window.addEventListener('DOMContentLoaded', () => {
   'use strict';
-  
+
   const AudioVisualizer = AudioVisualizeTool.AudioVisualizer;
 
   const {
-    Ripple
+    Ripple,
+    Ring
   } = AudioVisualizeTool.defaultElements;
 
   const {
@@ -14,8 +15,6 @@ window.addEventListener('DOMContentLoaded', () => {
     clearLoading,
     renderBackgroundImg,
     renderLounge,
-    renderProgressbar,
-    renderProgressbarShadow,
     renderSeekBar,
     renderSeekBarShadow,
     bindSeekBarEvent,
@@ -31,6 +30,33 @@ window.addEventListener('DOMContentLoaded', () => {
   } = AudioVisualizeTool.defaultInitHooks;
 
   let ripple = new Ripple();
+  let outerRing = new Ring({
+    radius: 95,
+    progress: {
+      on: true,
+      reverse: true
+    },
+    speed: -10
+  });
+  let innerRing = new Ring({
+    radius: 85,
+    width: 3,
+    progress: {
+      on: true,
+      reverse: false
+    },
+    speed: -10
+  });
+  let beatRing = new Ring({
+    radius: 105,
+    color: "#000",
+    opacity: 0.1,
+    beat: {
+      strength: 10,
+      frequencySource: 9
+    }
+  });
+
   let audioVisualizer = new AudioVisualizer({
     autoplay: false,
     loop: true,
@@ -50,7 +76,7 @@ window.addEventListener('DOMContentLoaded', () => {
     canvasStatic: 'myStaticCanvas', // static canvas
     customCanvases: [], // you can add your own canvases
 
-    // customize your theme
+    // deprecated
     theme: {
       barWidth: 2,
       barHeight: 5,
@@ -73,7 +99,7 @@ window.addEventListener('DOMContentLoaded', () => {
     afterStartHook: [],
 
     beforePauseHook: [],
-    afterPauseHook: [renderProgressbar, renderTime, renderSeekBar, renderPlayControl],
+    afterPauseHook: [outerRing.render(), innerRing.render(), beatRing.render(), renderTime, renderSeekBar, renderPlayControl],
 
     beforeResumeHook: [],
     afterResumeHook: [],
@@ -83,11 +109,11 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // hook for static canvas
     beforeStaticHook: [renderBackgroundImg],
-    onStaticHook: [renderProgressbarShadow, renderInfo, renderSeekBarShadow, renderVolumeBar],
+    onStaticHook: [renderInfo, renderSeekBarShadow, renderVolumeBar],
 
     // hooks that will be excuted for each frame
     // used for the main canvas
-    onFrameHook: [renderLounge, renderProgressbar, renderTime, renderSeekBar, ripple.render()],
+    onFrameHook: [renderLounge, outerRing.render(), innerRing.render(), beatRing.render(), renderTime, renderSeekBar, ripple.render()],
 
     // you may bind your events here
     onEventHook: [bindPlayControlEvent, bindSeekBarEvent, bindVolumeBarEvent],

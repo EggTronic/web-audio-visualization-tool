@@ -1,7 +1,7 @@
 import Ripple from "./ripple";
-import ProgressCircle from "./progressCircle";
+import Ring from "./ring";
 
 export {
   Ripple,
-  ProgressCircle
+  Ring
 };
