@@ -4,7 +4,7 @@ import {
   AudioInfo
 } from '../types/canvasElement';
 
-declare interface RingOption {
+export interface RingOption {
   radius: number;
   width: number;
   color?: string;

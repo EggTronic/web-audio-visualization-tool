@@ -25,7 +25,7 @@ export const renderLounge = (avCtx) => {
 
       avCtx.canvasCtx.save();
       avCtx.canvasCtx.translate(cx + avCtx.theme.barSpacing - 10, cy + avCtx.theme.barSpacing);
-      avCtx.canvasCtx.rotate(alfa - beta);
+      avCtx.canvasCtx.rotate(alfa);
       avCtx.canvasCtx.fillRect(x, y, w, h);
       avCtx.canvasCtx.restore();
     }
