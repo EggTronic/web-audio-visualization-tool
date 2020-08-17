@@ -27,6 +27,9 @@ class Ripple extends CanvasElement {
   lastripple: number;
   rippleLines: [];
   constructor({
+    xoffset = 0,
+    yoffset = 0,
+    opacity = 1,
     size,
     radius,
     width,
@@ -37,16 +40,6 @@ class Ripple extends CanvasElement {
     rateStep = 2
   }: RippleOption & CanvasElementProps) {
     super(xoffset, yoffset, opacity);
-    const defaultOptions = {
-      size: 250,
-      radius: 80,
-      width: 11,
-      radiusGrow: 1,
-      minInterval: 400,
-      color: '#fff',
-      initRate: 4,
-      rateStep: 2 // step to increase for each frame
-    };
 
     this.size = size;
     this.radius = radius;
@@ -67,19 +60,19 @@ class Ripple extends CanvasElement {
     });
   }
 
-  _strokeRipple(avCtx) {
+  _strokeRipple(ctx: CanvasRenderingContext2D) {
     // remove ripples that goes out of the container
     if (this.rippleLines[0] && this.rippleLines[0].r > this.size) {
       this.rippleLines.shift();
     }
 
     // create new ripple
-    if (this.rate - this.lastripple >= this.options.minInterval) {
+    if (this.rate - this.lastripple >= this.minInterval) {
       this.rippleLines.push({
-        r: this.options.radius + this.options.width / 2,
-        c: this.options.color,
-        o: this.options.opacity,
-        w: this.options.width
+        r: this.radius + this.width / 2,
+        c: this.color,
+        o: this.opacity,
+        w: this.width
       });
 
       // update time
@@ -88,36 +81,38 @@ class Ripple extends CanvasElement {
 
     // calculate next ripple
     this.rippleLines = this.rippleLines.map((line) => {
-      line.r += this.options.radiusGrow * line.o;
-      line.o = (this.options.size - line.r + 1) / (this.options.size - this.options.radius);
-      line.w = this.options.width * line.o;
-      line.c = this.options.color;
+      line.r += this.radiusGrow * line.o;
+      line.o = (this.size - line.r + 1) / (this.size - this.radius);
+      line.w = this.width * line.o;
+      line.c = this.color;
       return line;
     })
-
-    this._strokeRippleLine(avCtx);
-
-    this.rate += this.options.rateStep;
   }
 
-  _strokeRippleLine(avCtx) {
+  _strokeRippleLine(ctx: CanvasRenderingContext2D) {
     this.rippleLines.forEach(line => {
-      let cx = avCtx.canvas.width / 2;
-      let cy = avCtx.canvas.height / 2;
+      let cx = ctx.canvas.width / 2;
+      let cy = ctx.canvas.height / 2;
 
-      avCtx.canvasCtx.beginPath();
-      avCtx.canvasCtx.arc(cx, cy, line.r, 0.5 * Math.PI, 0.5 * Math.PI + 2 * Math.PI);
-      avCtx.canvasCtx.strokeStyle = line.c;
-      avCtx.canvasCtx.lineWidth = line.w;
-      avCtx.canvasCtx.globalAlpha = line.o;
-      avCtx.canvasCtx.stroke();
-      avCtx.canvasCtx.closePath();
-      avCtx.canvasCtx.globalAlpha = 1;
+      ctx.beginPath();
+      ctx.arc(cx, cy, line.r, 0.5 * Math.PI, 0.5 * Math.PI + 2 * Math.PI);
+      ctx.strokeStyle = line.c;
+      ctx.lineWidth = line.w;
+      ctx.globalAlpha = line.o;
+      ctx.stroke();
+      ctx.closePath();
+      ctx.globalAlpha = 1;
     })
   }
 
-  render() {
-    return this._strokeRipple.bind(this);
+  render(
+    ctx: CanvasRenderingContext2D,
+    audioInfo: AudioInfo,
+    frequencyData: Uint8Array
+  ) {
+    this._strokeRipple(ctx);
+    this._strokeRippleLine(ctx);
+    this.rate += this.rateStep;
   }
 }
 
