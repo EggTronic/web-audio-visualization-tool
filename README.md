@@ -174,8 +174,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
 ---
 ## 📝 Here is my todo list (** means on going)
-- [ ] ** NPM upload + cdn
-- [ ] ** multiple audio source support
 - [ ] ** Refactor to TypeScript
 - [ ] ** design object modal for elements on canvas
   - [x] an example of ripple class
@@ -212,3 +210,5 @@ window.addEventListener('DOMContentLoaded', () => {
 - [ ] Compatibility across different browsers
 - [ ] adding ability to support Three.js
 - [ ] typescript support
+- [ ] generate video
+    - https://github.com/pixijs/pixi.js/issues/6731
